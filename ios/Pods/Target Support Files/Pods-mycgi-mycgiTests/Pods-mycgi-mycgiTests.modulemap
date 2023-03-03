@@ -1,0 +1,6 @@
+module Pods_mycgi_mycgiTests {
+  umbrella header "Pods-mycgi-mycgiTests-umbrella.h"
+
+  export *
+  module * { export * }
+}

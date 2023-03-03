@@ -1,0 +1,6 @@
+module Pods_mycgi {
+  umbrella header "Pods-mycgi-umbrella.h"
+
+  export *
+  module * { export * }
+}
