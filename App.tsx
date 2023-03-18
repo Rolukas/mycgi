@@ -11,7 +11,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NativeBaseProvider } from 'native-base';
 import type { Node } from 'react';
 import React from 'react';
-import { SafeAreaView, StatusBar, StyleSheet, useColorScheme } from 'react-native';
+import { SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
 import Login from './src/components/Login';
 
 const Stack = createNativeStackNavigator();
@@ -25,10 +25,14 @@ const App: () => Node = () => {
 
   return (
     <NativeBaseProvider>
-      <SafeAreaView style={{ height: '100%' }}>
-        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <SafeAreaView style={{ height: '100%', backgroundColor: 'black' }}>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName={'Login'}>
+          <Stack.Navigator
+            initialRouteName={'Login'}
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
             <Stack.Screen name={'Login'} component={Login} options={{ title: 'Login' }} />
           </Stack.Navigator>
         </NavigationContainer>
