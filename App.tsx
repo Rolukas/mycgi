@@ -6,38 +6,44 @@
  * @flow strict-local
  */
 
+import { IconComponentProvider } from '@react-native-material/core';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NativeBaseProvider } from 'native-base';
-import type { Node } from 'react';
 import React from 'react';
-import { SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
-import Login from './src/components/Login';
+import { SafeAreaView, StyleSheet } from 'react-native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import AppNavigator from './src/components/Navigator/AppNavigator';
+import AuthNavigator from './src/components/Navigator/AuthNavigator';
+import useIsLoggedIn from './src/hooks/useIsLoggedIn';
+import { persistor, store } from './src/store/store';
 
 const Stack = createNativeStackNavigator();
 
-enum HomeScreens {
-  Login = 'Login',
-}
-
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
+const Main = () => {
+  const isLoggedIn = useIsLoggedIn();
   return (
-    <NativeBaseProvider>
-      <SafeAreaView style={{ height: '100%', backgroundColor: 'black' }}>
-        <NavigationContainer>
-          <Stack.Navigator
-            initialRouteName={'Login'}
-            screenOptions={{
-              headerShown: false,
-            }}
-          >
-            <Stack.Screen name={'Login'} component={Login} options={{ title: 'Login' }} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </SafeAreaView>
-    </NativeBaseProvider>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <NativeBaseProvider>
+          <IconComponentProvider IconComponent={MaterialCommunityIcons}>
+            <SafeAreaView style={{ height: '100%', backgroundColor: 'black' }}>
+              <NavigationContainer>{!isLoggedIn ? <AuthNavigator /> : <AppNavigator />}</NavigationContainer>
+            </SafeAreaView>
+          </IconComponentProvider>
+        </NativeBaseProvider>
+      </PersistGate>
+    </Provider>
+  );
+};
+
+const App = () => {
+  return (
+    <Provider store={store}>
+      <Main />
+    </Provider>
   );
 };
 
