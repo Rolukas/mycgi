@@ -8,7 +8,6 @@
 
 import { IconComponentProvider } from '@react-native-material/core';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NativeBaseProvider } from 'native-base';
 import React from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
@@ -19,8 +18,6 @@ import AppNavigator from './src/components/Navigator/AppNavigator';
 import AuthNavigator from './src/components/Navigator/AuthNavigator';
 import useIsLoggedIn from './src/hooks/useIsLoggedIn';
 import { persistor, store } from './src/store/store';
-
-const Stack = createNativeStackNavigator();
 
 const Main = () => {
   const isLoggedIn = useIsLoggedIn();

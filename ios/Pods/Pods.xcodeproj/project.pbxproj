@@ -9319,7 +9319,7 @@
 				46EB2E00011570 /* Support Files */,
 			);
 			name = RNCAsyncStorage;
-			path = "../../node_modules/@react-native-community/async-storage";
+			path = "../../node_modules/@react-native-async-storage/async-storage";
 			sourceTree = "<group>";
 		};
 		46EB2E000001D0 /* RNCMaskedView */ = {

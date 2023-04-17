@@ -37,9 +37,8 @@ const mainReducer = (state = initialState, action) => {
       };
     }
     // Default
-    default: {
+    default:
       return state;
-    }
   }
 };
 // Exports
