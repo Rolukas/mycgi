@@ -4,6 +4,7 @@ import { AppScreens } from '../types/screens';
 enum ModuleCategory {
   Students = 'Alumnos',
   Teachers = 'Maestros',
+  Groups = 'Grupos',
 }
 
 const UIModulesList: UIModule[] = [
@@ -34,6 +35,20 @@ const UIModulesList: UIModule[] = [
     route: AppScreens.AddTeacher,
     backgroundColor: '#FD3589',
     category: ModuleCategory.Teachers,
+  },
+  {
+    name: 'Grupos',
+    icon: 'account-multiple',
+    route: AppScreens.Groups,
+    backgroundColor: '#359DFD',
+    category: ModuleCategory.Groups,
+  },
+  {
+    name: 'Agregar Grupo',
+    icon: 'plus-circle-outline',
+    route: AppScreens.AddGroup,
+    backgroundColor: '#FD3589',
+    category: ModuleCategory.Groups,
   },
 ];
 

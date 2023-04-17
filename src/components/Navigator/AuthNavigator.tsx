@@ -8,7 +8,7 @@ const Stack = createNativeStackNavigator();
 const AppNavigator: React.FC = () => {
   return (
     <Stack.Navigator
-      initialRouteName={'Login'}
+      initialRouteName={AuthScreens.Login}
       screenOptions={{
         headerShown: false,
       }}

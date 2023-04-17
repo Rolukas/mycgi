@@ -7,9 +7,13 @@ interface ActionButtonProps {
 }
 
 const ActionButton: React.FC<ActionButtonProps> = ({ onPress, text }) => {
+  const handlePress = () => {
+    if (onPress) onPress();
+  };
+
   return (
-    <Button mt="10" borderRadius="xl" backgroundColor="#0BA162">
-      <Text color="white" fontSize="xl" fontWeight="bold">
+    <Button mt="10" borderRadius="xl" backgroundColor="#0BA162" onPress={handlePress}>
+      <Text color="white" fontSize="md" fontWeight="bold">
         {text}
       </Text>
     </Button>

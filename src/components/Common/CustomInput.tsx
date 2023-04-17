@@ -5,9 +5,19 @@ interface CustomInputProps {
   placeholderText?: string;
   value: string;
   onChangeText: (text: string) => void;
+  maxLength?: number;
+  type?: 'text' | 'password';
+  keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
 }
 
-const CustomInput: React.FC<CustomInputProps> = ({ placeholderText = '', value, onChangeText }) => {
+const CustomInput: React.FC<CustomInputProps> = ({
+  placeholderText = '',
+  value,
+  onChangeText,
+  maxLength,
+  type,
+  keyboardType,
+}) => {
   return (
     <Input
       mt="5"
@@ -17,6 +27,11 @@ const CustomInput: React.FC<CustomInputProps> = ({ placeholderText = '', value, 
       borderRadius="lg"
       value={value}
       onChangeText={onChangeText}
+      maxLength={maxLength}
+      type={type ?? 'text'}
+      color="white"
+      keyboardType={keyboardType ?? 'default'}
+      autoCapitalize="none"
     />
   );
 };

@@ -8,4 +8,6 @@ export const enum AppScreens {
   AddStudent = 'AddStudent',
   Teachers = 'Teachers',
   AddTeacher = 'AddTeacher',
+  Groups = 'Groups',
+  AddGroup = 'AddGroup',
 }
