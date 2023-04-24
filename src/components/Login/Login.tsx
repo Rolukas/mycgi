@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import CGIName from '../../assets/images/cgi_name.svg';
 import LogoWhite from '../../assets/images/logo_white.svg';
+import { baseURL } from '../../functions/api/API';
 import { signInAction } from '../../store/actions';
 import SignInActionPayload from '../../types/actions';
 import { Module } from '../../types/module';
@@ -34,9 +35,13 @@ const Login = () => {
       const usernamePasswordBuffer = Buffer.from(user + ':' + password);
       const base64data = usernamePasswordBuffer.toString('base64');
 
-      const request = await axios.get('http://localhost:3002/api/Login', {
+      console.log(baseURL);
+      console.log('base64data', base64data);
+
+      const request = await axios.get(baseURL + '/Login', {
         headers: {
           Authorization: `Basic ${base64data}`,
+          'Content-Type': 'application/json',
         },
       });
 
