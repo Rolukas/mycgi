@@ -1,11 +1,12 @@
 import { Buffer } from '@craftzdog/react-native-buffer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import { Box, Button, Center, Input, Spinner, Text, useToast } from 'native-base';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import SignInActionPayload from 'src/types/actions';
 import CGIName from '../../assets/images/cgi_name.svg';
 import LogoWhite from '../../assets/images/logo_white.svg';
-import API from '../../functions/api/API';
 import { signInAction } from '../../store/actions';
 import { Module } from '../../types/module';
 import { APIResponse } from '../../types/response';
@@ -19,6 +20,8 @@ interface UserConfiguration {
 interface LoginResponse extends APIResponse {
   items: [UserConfiguration];
 }
+
+const saveToken = async token => await AsyncStorage.setItem('authToken', token);
 
 const Login = () => {
   const [user, setUser] = useState<string>('');
@@ -34,7 +37,9 @@ const Login = () => {
       const usernamePasswordBuffer = Buffer.from(user + ':' + password);
       const base64data = usernamePasswordBuffer.toString('base64');
 
-      const request = await API.get('/Login', {
+      await saveToken(base64data);
+
+      const request = await axios.get('http://localhost:3002/api/Login', {
         headers: {
           Authorization: `Basic ${base64data}`,
         },
@@ -52,9 +57,11 @@ const Login = () => {
           authToken: base64data,
         };
         dispatch(signInAction(payload));
+        axios.defaults.headers.common['Authorization'] = `Basic ${base64data}`;
       }
     } catch (e) {
-      console.error(e);
+      await saveToken('');
+      console.error(e.message);
       toast.show({
         description: 'Credenciales inválidas',
       });

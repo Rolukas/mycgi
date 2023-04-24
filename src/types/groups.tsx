@@ -1,4 +1,4 @@
-interface BasicGroup {
+export interface BasicGroup {
   id: number;
   letter: string;
   level: string;

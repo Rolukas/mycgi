@@ -1,16 +1,14 @@
-import { Box, Button, Center, FlatList, Icon, Spinner, Text } from 'native-base';
+import axios from 'axios';
+import { Box, Center, FlatList, Spinner } from 'native-base';
 import React, { useEffect, useState } from 'react';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import NextBtn from '../../assets/images/next_btn.svg';
-import API from '../../functions/api/API';
 import either from '../../functions/either';
 import { APIResponse } from '../../types/response';
+import BasicInfoCard, { BasicInfoCardItems } from '../Common/BasicInfoCard';
 import CustomInput from '../Common/CustomInput';
 import ScreenWrapper from '../Common/ScreenWrapper';
 interface StudentResponse extends APIResponse {
   items: StudentCard[];
 }
-
 interface StudentCard {
   id: number;
   code: string;
@@ -21,59 +19,73 @@ interface StudentCard {
 
 const Students = () => {
   const [searchStudent, setSearchStudent] = useState<string>('');
+  const [allStudents, setAllStudents] = useState<StudentCard[]>([]);
   const [currentStudents, setCurrentStudents] = useState<StudentCard[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const getStudents = async () => {
     try {
       setIsLoading(true);
-      const request = await API.get('/Student');
+      const request = await axios.get('/Student');
       const response: StudentResponse = await request.data;
-      console.log(response);
+
       if (response) {
+        setAllStudents(response.items);
         setCurrentStudents(response.items);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
+    if (searchStudent === '') {
+      setCurrentStudents(allStudents);
+    } else {
+      const filteredStudents = allStudents.filter(
+        student =>
+          student.name.toLowerCase().includes(searchStudent.toLowerCase()) ||
+          student.name.toLowerCase().startsWith(searchStudent.toLowerCase()) ||
+          student.fatherlastname.toLowerCase().includes(searchStudent.toLowerCase()) ||
+          student.fatherlastname.toLowerCase().startsWith(searchStudent.toLowerCase()) ||
+          student.group.toLowerCase().includes(searchStudent.toLowerCase()) ||
+          student.group.toLowerCase().startsWith(searchStudent.toLowerCase()),
+      );
+      setCurrentStudents(filteredStudents);
+    }
+  }, [searchStudent]);
+
+  useEffect(() => {
     getStudents();
   }, []);
 
   const renderItem = ({ item }: { item: StudentCard }) => {
+    const onStudentPress = () => {
+      console.log(item.id);
+    };
+
+    const items: BasicInfoCardItems[] = [
+      {
+        fieldName: 'Grupo',
+        fieldValue: item.group,
+        icon: 'account-box',
+      },
+      {
+        fieldName: 'Materias',
+        fieldValue: '0',
+        icon: 'view-list',
+      },
+    ];
+
     return (
-      <Box key={item.id} backgroundColor={'#333333'} borderRadius="lg" paddingX="5" paddingY="2" mt="3">
-        <Text color="white" fontSize="xl" fontWeight="bold">
-          {`${item.name} ${item.fatherlastname}`}
-        </Text>
-        <Box>
-          <Box flexDir="row">
-            <Box pt="2.5" pr="2">
-              <Icon name="view-list" color="white" size={15} as={MaterialCommunityIcons} />
-            </Box>
-            <Text color="white" mt="2" fontSize="md">
-              {`Grupo: ${item.group}`}
-            </Text>
-          </Box>
-          <Box flexDir="row">
-            <Box pt="2.5" pr="2">
-              <Icon name="account-box" color="white" size={15} as={MaterialCommunityIcons} />
-            </Box>
-            <Text color="white" mt="2" fontSize="md">
-              {`Materias:`}
-            </Text>
-          </Box>
-        </Box>
-        <Box>
-          <Button>
-            <NextBtn />
-          </Button>
-        </Box>
-      </Box>
+      <BasicInfoCard
+        key={item.id}
+        title={`${item.name} ${item.fatherlastname}`}
+        items={items}
+        onPress={onStudentPress}
+      />
     );
   };
 

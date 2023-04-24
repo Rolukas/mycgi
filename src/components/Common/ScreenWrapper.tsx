@@ -13,7 +13,6 @@ const ScreenWrapper: React.FC<ScreenWrapperProps> = ({ children, screenTitle }) 
   const navigation = useNavigation();
 
   const onBack = () => {
-    console.log('RETURN');
     navigation.goBack();
   };
 

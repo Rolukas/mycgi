@@ -1,8 +1,8 @@
+import axios from 'axios';
 import { Center, Text, useToast } from 'native-base';
 import React, { useState } from 'react';
 import { Keyboard } from 'react-native';
-import { APIResponse } from 'src/types/response';
-import API from '../../functions/api/API';
+import { APIResponseBody } from '../../types/response';
 import ActionButton from '../Common/ActionButton';
 import CustomInput from '../Common/CustomInput';
 import ScreenWrapper from '../Common/ScreenWrapper';
@@ -48,9 +48,10 @@ export default function AddGroup() {
         letter: groupLetter,
       };
 
-      const request: APIResponse = await API.post('/Group', payload);
+      const request = await axios.post('/Group', payload);
+      const response: APIResponseBody = await request.data;
 
-      if (request.data.success) {
+      if (response.success === true) {
         toast.show({
           description: 'Grupo agregado correctamente',
         });
@@ -70,8 +71,8 @@ export default function AddGroup() {
       // Fails
       onCreateGroupError();
     } catch (error) {
+      console.error(error);
       onCreateGroupError();
-      console.log(error);
     }
   };
 

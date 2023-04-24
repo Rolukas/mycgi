@@ -1,106 +1,73 @@
 import axios from 'axios';
-import { ScrollView, Select, Spinner, useToast } from 'native-base';
-import React, { useEffect, useState } from 'react';
+import { ScrollView, Spinner, useToast } from 'native-base';
+import React, { useState } from 'react';
 import either from '../../functions/either';
-import { BasicGroup } from '../../types/groups';
-import { APIResponse, APIResponseBody } from '../../types/response';
+import { APIResponseBody } from '../../types/response';
 import ActionButton from '../Common/ActionButton';
 import CustomInput from '../Common/CustomInput';
 import ScreenWrapper from '../Common/ScreenWrapper';
-interface GroupsResponse extends APIResponse {
-  items: BasicGroup[];
-}
 
-interface StudentInput {
+interface TeacherInput {
   name: string;
   fatherLastName: string;
   motherLastName: string;
   email: string;
   phone: string;
-  groupId: number;
 }
 
-export default function AddStudent() {
+const AddTeacher: React.FC = () => {
   const [name, setName] = useState<string>('');
   const [fatherLastName, setFatherLastName] = useState<string>('');
   const [motherLastName, setMotherLastName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
-  const [group, setGroup] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [groups, setGroups] = useState<BasicGroup[]>([]);
   const toast = useToast();
 
-  const getAvailableGroups = async () => {
-    try {
-      // TODO: Get available groups
-      setIsLoading(true);
-      const request = await axios.get('/Group');
-      const response: GroupsResponse = await request.data;
-
-      if (response) {
-        setGroups(response.items);
-      }
-    } catch (error) {
-      toast.show({
-        description: 'Ocurrió un error al obtener los grupos',
-      });
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getAvailableGroups();
-  }, []);
-
-  const onSaveStudentError = () => {
+  const onSaveTeacherError = () => {
     toast.show({
-      description: 'Ocurrió un error al agregar el alumno',
+      description: 'Ocurrió un error al agregar al maestro',
     });
   };
 
-  const onSaveStudent = async () => {
+  const onSaveTeacher = async () => {
     try {
       if (allFieldsAreValidated()) {
         setIsLoading(true);
-        const payload: StudentInput = {
+        const payload: TeacherInput = {
           name,
           fatherLastName,
           motherLastName,
           email,
           phone,
-          groupId: parseInt(group),
         };
 
-        const request = await axios.post('/Student', payload);
+        const request = await axios.post('/Teacher', payload);
         const response: APIResponseBody = await request.data;
 
-        if (response.message === 'student already created') {
+        if (response.message === 'teacher already created') {
           toast.show({
-            description: 'El alumno ya ha sido creado',
+            description: 'El maestro ya ha sido creado',
           });
           return;
         }
 
         if (response.success) {
           toast.show({
-            description: 'Alumno agregado correctamente',
+            description: 'Maestro agregado correctamente',
           });
           setName('');
           setFatherLastName('');
           setMotherLastName('');
           setEmail('');
           setPhone('');
-          setGroup('');
           return;
         }
 
-        onSaveStudentError();
+        onSaveTeacherError();
       }
     } catch (error) {
-      onSaveStudentError();
+      onSaveTeacherError();
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -138,37 +105,22 @@ export default function AddStudent() {
       });
       return false;
     }
-    if (!group) {
-      toast.show({
-        description: 'El grupo es requerido',
-      });
-      return false;
-    }
 
     return true;
   };
 
   return (
-    <ScreenWrapper screenTitle={'Agregar Alumno'}>
+    <ScreenWrapper screenTitle={'Agregar Maestro'}>
       <ScrollView>
         <CustomInput placeholderText="Nombre(s)" value={name} onChangeText={setName} />
         <CustomInput placeholderText="Apellido Paterno" value={fatherLastName} onChangeText={setFatherLastName} />
         <CustomInput placeholderText="Apellido Materno" value={motherLastName} onChangeText={setMotherLastName} />
         <CustomInput placeholderText="Correo Electrónico (Institucional)" value={email} onChangeText={setEmail} />
         <CustomInput placeholderText="Teléfono" value={phone} onChangeText={setPhone} />
-        <Select mt="5" size="lg" placeholder="Grupo" fontSize="xl" onValueChange={setGroup} color="white">
-          {groups.map(group => {
-            return (
-              <Select.Item
-                key={`group-${group.fullname}-${group.id}`}
-                label={group.fullname}
-                value={group.id.toString()}
-              />
-            );
-          })}
-        </Select>
-        {either(isLoading, <Spinner />, <ActionButton text={'Guardar'} onPress={() => onSaveStudent()} />)}
+        {either(isLoading, <Spinner />, <ActionButton text={'Guardar'} onPress={() => onSaveTeacher()} />)}
       </ScrollView>
     </ScreenWrapper>
   );
-}
+};
+
+export default AddTeacher;

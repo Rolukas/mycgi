@@ -8,19 +8,35 @@
 
 import { IconComponentProvider } from '@react-native-material/core';
 import { NavigationContainer } from '@react-navigation/native';
+import axios from 'axios';
 import { NativeBaseProvider } from 'native-base';
-import React from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import React, { useEffect } from 'react';
+import { LogBox, SafeAreaView } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Provider } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import AppNavigator from './src/components/Navigator/AppNavigator';
 import AuthNavigator from './src/components/Navigator/AuthNavigator';
+import { baseURL } from './src/functions/api/API';
 import useIsLoggedIn from './src/hooks/useIsLoggedIn';
+import { selectAuthToken } from './src/store/selectors';
 import { persistor, store } from './src/store/store';
+LogBox.ignoreLogs(['EventEmitter.removeListener']);
 
 const Main = () => {
   const isLoggedIn = useIsLoggedIn();
+  const token = useSelector(selectAuthToken);
+
+  useEffect(() => {
+    axios.defaults.baseURL = baseURL;
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Basic ${token}`;
+    }
+  }, [token]);
+
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
@@ -43,24 +59,5 @@ const App = () => {
     </Provider>
   );
 };
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
