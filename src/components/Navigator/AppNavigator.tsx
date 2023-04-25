@@ -1,12 +1,15 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import { AppScreens } from '../../types/screens';
+import AddClass from '../AddClass/AddClass';
 import AddGroup from '../AddGroup/AddGroup';
 import AddStudent from '../AddStudent/AddStudent';
+import AddSubject from '../AddSubject/AddSubject';
 import AddTeacher from '../AddTeacher/AddTeacher';
 import Groups from '../Groups/Groups';
 import Home from '../Home/Home';
 import Students from '../Students/Students';
+import Subjects from '../Subjects/Subjects';
 import Teachers from '../Teachers/Teachers';
 
 const Stack = createNativeStackNavigator();
@@ -26,6 +29,10 @@ const AppNavigator: React.FC = () => {
       <Stack.Screen name={AppScreens.Groups} component={Groups} />
       <Stack.Screen name={AppScreens.AddTeacher} component={AddTeacher} />
       <Stack.Screen name={AppScreens.Teachers} component={Teachers} />
+      <Stack.Screen name={AppScreens.Subjects} component={Subjects} />
+      <Stack.Screen name={AppScreens.AddSubject} component={AddSubject} />
+      {/* <Stack.Screen name={AppScreens.Classes} component={} /> */}
+      <Stack.Screen name={AppScreens.AddClass} component={AddClass} />
     </Stack.Navigator>
   );
 };

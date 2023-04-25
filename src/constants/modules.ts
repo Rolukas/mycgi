@@ -5,6 +5,8 @@ enum ModuleCategory {
   Students = 'Alumnos',
   Teachers = 'Maestros',
   Groups = 'Grupos',
+  Subjects = 'Materias',
+  Classes = 'Clases',
 }
 
 const UIModulesList: UIModule[] = [
@@ -49,6 +51,34 @@ const UIModulesList: UIModule[] = [
     route: AppScreens.AddGroup,
     backgroundColor: '#FD3589',
     category: ModuleCategory.Groups,
+  },
+  {
+    name: 'Materias',
+    icon: 'book-open-outline',
+    route: AppScreens.Subjects,
+    backgroundColor: '#359DFD',
+    category: ModuleCategory.Subjects,
+  },
+  {
+    name: 'Agregar Materia',
+    icon: 'book-plus-multiple',
+    route: AppScreens.AddSubject,
+    backgroundColor: '#FD3589',
+    category: ModuleCategory.Subjects,
+  },
+  {
+    name: 'Clases',
+    icon: 'clipboard-account',
+    route: AppScreens.Classes,
+    backgroundColor: '#359DFD',
+    category: ModuleCategory.Classes,
+  },
+  {
+    name: 'Agregar Clase',
+    icon: 'human-male-board',
+    route: AppScreens.AddClass,
+    backgroundColor: '#FD3589',
+    category: ModuleCategory.Classes,
   },
 ];
 
