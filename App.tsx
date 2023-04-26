@@ -8,7 +8,6 @@
 
 import { IconComponentProvider } from '@react-native-material/core';
 import { NavigationContainer } from '@react-navigation/native';
-import axios from 'axios';
 import { NativeBaseProvider } from 'native-base';
 import React, { useEffect } from 'react';
 import { LogBox, SafeAreaView } from 'react-native';
@@ -17,7 +16,7 @@ import { Provider, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import AppNavigator from './src/components/Navigator/AppNavigator';
 import AuthNavigator from './src/components/Navigator/AuthNavigator';
-import { baseURL } from './src/functions/api/API';
+import API, { baseURL } from './src/functions/api/API';
 import useIsLoggedIn from './src/hooks/useIsLoggedIn';
 import { selectAuthToken } from './src/store/selectors';
 import { persistor, store } from './src/store/store';
@@ -28,12 +27,12 @@ const Main = () => {
   const token = useSelector(selectAuthToken);
 
   useEffect(() => {
-    axios.defaults.baseURL = baseURL;
+    API.defaults.baseURL = baseURL;
   }, []);
 
   useEffect(() => {
     if (token) {
-      axios.defaults.headers.common['Authorization'] = `Basic ${token}`;
+      API.defaults.headers.common['Authorization'] = `Basic ${token}`;
     }
   }, [token]);
 

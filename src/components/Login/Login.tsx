@@ -1,11 +1,10 @@
 import { Buffer } from '@craftzdog/react-native-buffer';
-import axios from 'axios';
 import { Box, Button, Center, Input, Spinner, Text, useToast } from 'native-base';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import CGIName from '../../assets/images/cgi_name.svg';
 import LogoWhite from '../../assets/images/logo_white.svg';
-import { baseURL } from '../../functions/api/API';
+import API, { baseURL } from '../../functions/api/API';
 import { signInAction } from '../../store/actions';
 import SignInActionPayload from '../../types/actions';
 import { Module } from '../../types/module';
@@ -38,7 +37,7 @@ const Login = () => {
       console.log(baseURL);
       console.log('base64data', base64data);
 
-      const request = await axios.get(baseURL + '/Login', {
+      const request = await API.get(baseURL + '/Login', {
         headers: {
           Authorization: `Basic ${base64data}`,
           'Content-Type': 'application/json',
@@ -57,7 +56,7 @@ const Login = () => {
           authToken: base64data,
         };
         dispatch(signInAction(payload));
-        axios.defaults.headers.common['Authorization'] = `Basic ${base64data}`;
+        API.defaults.headers.common['Authorization'] = `Basic ${base64data}`;
       }
     } catch (e) {
       console.error(e.message);

@@ -1,6 +1,6 @@
-import axios from 'axios';
 import { ScrollView, Select, Spinner, useToast } from 'native-base';
 import React, { useEffect, useState } from 'react';
+import API from '../../functions/api/API';
 import either from '../../functions/either';
 import { BasicGroup } from '../../types/groups';
 import { APIResponse, APIResponseBody } from '../../types/response';
@@ -35,7 +35,7 @@ export default function AddStudent() {
     try {
       // TODO: Get available groups
       setIsLoading(true);
-      const request = await axios.get('/Group');
+      const request = await API.get('/Group');
       const response: GroupsResponse = await request.data;
 
       if (response) {
@@ -74,7 +74,7 @@ export default function AddStudent() {
           groupId: parseInt(group),
         };
 
-        const request = await axios.post('/Student', payload);
+        const request = await API.post('/Student', payload);
         const response: APIResponseBody = await request.data;
 
         if (response.message === 'student already created') {

@@ -1,6 +1,6 @@
-import axios from 'axios';
 import { Box, Center, FlatList, Spinner, useToast } from 'native-base';
 import React, { useEffect, useState } from 'react';
+import API from '../../functions/api/API';
 import either from '../../functions/either';
 import { BasicGroup } from '../../types/groups';
 import { APIResponseBody } from '../../types/response';
@@ -27,7 +27,7 @@ const Groups: React.FC = () => {
 
   const getGroups = async () => {
     try {
-      const request = await axios.get('/Group');
+      const request = await API.get('/Group');
       const response: GroupOutput = await request.data;
 
       if (response.success === true) {

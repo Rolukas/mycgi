@@ -1,6 +1,6 @@
-import axios from 'axios';
 import { ScrollView, Spinner, useToast } from 'native-base';
 import React, { useState } from 'react';
+import API from '../../functions/api/API';
 import either from '../../functions/either';
 import { APIResponseBody } from '../../types/response';
 import ActionButton from '../Common/ActionButton';
@@ -42,7 +42,7 @@ const AddTeacher: React.FC = () => {
           phone,
         };
 
-        const request = await axios.post('/Teacher', payload);
+        const request = await API.post('/Teacher', payload);
         const response: APIResponseBody = await request.data;
 
         if (response.message === 'teacher already created') {

@@ -1,7 +1,7 @@
-import axios from 'axios';
 import { Center, Text, useToast } from 'native-base';
 import React, { useState } from 'react';
 import { Keyboard } from 'react-native';
+import API from '../../functions/api/API';
 import { APIResponseBody } from '../../types/response';
 import ActionButton from '../Common/ActionButton';
 import CustomInput from '../Common/CustomInput';
@@ -48,7 +48,7 @@ export default function AddGroup() {
         letter: groupLetter,
       };
 
-      const request = await axios.post('/Group', payload);
+      const request = await API.post('/Group', payload);
       const response: APIResponseBody = await request.data;
 
       if (response.success === true) {

@@ -1,6 +1,6 @@
-import axios from 'axios';
 import { Box, Center, FlatList, Spinner, useToast } from 'native-base';
 import React, { useEffect, useState } from 'react';
+import API from '../../functions/api/API';
 import either from '../../functions/either';
 import { APIResponseBody } from '../../types/response';
 import BasicInfoCard, { BasicInfoCardItems } from '../Common/BasicInfoCard';
@@ -33,7 +33,7 @@ export default function Subjects() {
     try {
       setIsLoading(true);
 
-      const request = await axios.get('/Subject');
+      const request = await API.get('/Subject');
       const response: SubjectsOutput = request.data;
 
       if (response.success) {

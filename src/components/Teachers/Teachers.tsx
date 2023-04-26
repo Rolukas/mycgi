@@ -1,25 +1,21 @@
-import axios from 'axios';
 import { Box, Center, FlatList, Spinner } from 'native-base';
 import React, { useEffect, useState } from 'react';
+import getTeachers, { TeacherResponse } from '../../api/Teacher/getTeachers';
 import either from '../../functions/either';
 import { APIResponse } from '../../types/response';
+import { Teacher } from '../../types/teacher';
 import BasicInfoCard, { BasicInfoCardItems } from '../Common/BasicInfoCard';
 import CustomInput from '../Common/CustomInput';
 import ScreenWrapper from '../Common/ScreenWrapper';
 
 interface StudentResponse extends APIResponse {
-  items: TeacherCard[];
-}
-interface TeacherCard {
-  id: number;
-  name: string;
-  fatherlastname: string;
+  items: Teacher[];
 }
 
 const Teachers = () => {
   const [searchTeacher, setSearchTeacher] = useState<string>('');
-  const [allTeachers, setAllTeachers] = useState<TeacherCard[]>([]);
-  const [currentTeachers, setCurrentTeachers] = useState<TeacherCard[]>([]);
+  const [allTeachers, setAllTeachers] = useState<Teacher[]>([]);
+  const [currentTeachers, setCurrentTeachers] = useState<Teacher[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -37,15 +33,14 @@ const Teachers = () => {
     }
   }, [searchTeacher]);
 
-  const getTeachers = async () => {
+  const getAllTeachers = async () => {
     try {
       setIsLoading(true);
-      const request = await axios.get('/Teacher');
-      const response: StudentResponse = await request.data;
+      const teachersResponse: TeacherResponse = await getTeachers();
 
-      if (response) {
-        setCurrentTeachers(response.items);
-        setAllTeachers(response.items);
+      if (teachersResponse.success) {
+        setCurrentTeachers(teachersResponse.items);
+        setAllTeachers(teachersResponse.items);
       }
     } catch (error) {
       console.error(error);
@@ -55,10 +50,10 @@ const Teachers = () => {
   };
 
   useEffect(() => {
-    getTeachers();
+    getAllTeachers();
   }, []);
 
-  const renderItem = ({ item }: { item: TeacherCard }) => {
+  const renderItem = ({ item }: { item: Teacher }) => {
     const onTeacherPress = () => {
       console.log(item.id);
     };

@@ -1,6 +1,6 @@
-import axios from 'axios';
 import { Box, Center, FlatList, Spinner } from 'native-base';
 import React, { useEffect, useState } from 'react';
+import getStudents from '../../api/Student/getStudents';
 import either from '../../functions/either';
 import { APIResponse } from '../../types/response';
 import BasicInfoCard, { BasicInfoCardItems } from '../Common/BasicInfoCard';
@@ -23,15 +23,14 @@ const Students = () => {
   const [currentStudents, setCurrentStudents] = useState<StudentCard[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const getStudents = async () => {
+  const getAllStudents = async () => {
     try {
       setIsLoading(true);
-      const request = await axios.get('/Student');
-      const response: StudentResponse = await request.data;
+      const request = await getStudents();
 
-      if (response) {
-        setAllStudents(response.items);
-        setCurrentStudents(response.items);
+      if (request.success) {
+        setAllStudents(request.items);
+        setCurrentStudents(request.items);
       }
     } catch (error) {
       console.error(error);
@@ -58,7 +57,7 @@ const Students = () => {
   }, [searchStudent]);
 
   useEffect(() => {
-    getStudents();
+    getAllStudents();
   }, []);
 
   const renderItem = ({ item }: { item: StudentCard }) => {

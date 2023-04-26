@@ -1,7 +1,7 @@
-import axios from 'axios';
 import { Spinner, useToast } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { Keyboard } from 'react-native';
+import API from '../../functions/api/API';
 import either from '../../functions/either';
 import { APIResponseBody } from '../../types/response';
 import ActionButton from '../Common/ActionButton';
@@ -48,7 +48,7 @@ export default function AddSubject() {
         name: subjectName,
       };
 
-      const request = await axios.post('/Subject', payload);
+      const request = await API.post('/Subject', payload);
       const response: APIResponseBody = request.data;
 
       if (response.success) {
