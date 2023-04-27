@@ -1,14 +1,24 @@
 import RNDateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { Button, Center, Checkbox, ScrollView, Select, Text, useToast } from 'native-base';
+import { Button, Center, Checkbox, ScrollView, Select, Spinner, Text, useToast } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import getStudents, { StudentResponse } from '../../api/Student/getStudents';
 import getTeachers, { TeacherResponse } from '../../api/Teacher/getTeachers';
 import API from '../../functions/api/API';
+import either from '../../functions/either';
+import { APIResponseBody } from '../../types/response';
 import { Student } from '../../types/student';
 import { Teacher } from '../../types/teacher';
 import ActionButton from '../Common/ActionButton';
+import CustomInput from '../Common/CustomInput';
 import ScreenWrapper from '../Common/ScreenWrapper';
 import { Subject, SubjectsOutput } from '../Subjects/Subjects';
+interface ClassInput {
+  subjectId: number;
+  teacherId: number;
+  startHour: string;
+  endHour: string;
+  students: string[];
+}
 
 export default function AddClass() {
   const today = new Date();
@@ -20,16 +30,110 @@ export default function AddClass() {
   const [showStartHourPicker, setShowStartHourPicker] = useState<boolean>(false);
   const [showEndHourPicker, setShowEndHourPicker] = useState<boolean>(false);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
-  const [students, setStudents] = useState<Student[]>([]);
+  const [currentStudents, setCurrentStudents] = useState<Student[]>([]);
+  const [allStudents, setAllStudents] = useState<Student[]>([]);
   const [teacherId, setTeacherId] = useState<string>('');
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
+  const [searchStudent, setSearchStudent] = useState<string>('');
   const toast = useToast();
 
   useEffect(() => {
     getSubjects();
-    getAllTeachers();
-    getAllStudents();
   }, []);
+
+  useEffect(() => {
+    if (searchStudent === '') {
+      setCurrentStudents(allStudents);
+    } else {
+      const filteredStudents = allStudents.filter(
+        student =>
+          student.name.toLowerCase().includes(searchStudent.toLowerCase()) ||
+          student.name.toLowerCase().startsWith(searchStudent.toLowerCase()) ||
+          student.fatherlastname.toLowerCase().includes(searchStudent.toLowerCase()) ||
+          student.fatherlastname.toLowerCase().startsWith(searchStudent.toLowerCase()) ||
+          student.group.toLowerCase().includes(searchStudent.toLowerCase()) ||
+          student.group.toLowerCase().startsWith(searchStudent.toLowerCase()),
+      );
+      setCurrentStudents(filteredStudents);
+    }
+  }, [searchStudent]);
+
+  const allFieldsAreFilled = () => {
+    if (subjectId === '') {
+      toast.show({
+        description: 'Selecciona una materia',
+      });
+      return false;
+    }
+    if (teacherId === '') {
+      toast.show({
+        description: 'Selecciona un maestro',
+      });
+      return false;
+    }
+    if (selectedStudents.length === 0) {
+      toast.show({
+        description: 'Selecciona al menos un alumno',
+      });
+      return false;
+    }
+    return true;
+  };
+
+  const parseHour = (hour: Date) => {
+    return `${hour.getHours()}:${hour.getMinutes()}`;
+  };
+
+  const onCreateClass = async () => {
+    const onCreateClassError = () => {
+      toast.show({
+        description: 'Ocurrió un error al crear la clase',
+      });
+    };
+    try {
+      if (!allFieldsAreFilled()) return;
+
+      setIsLoading(true);
+      const payload: ClassInput = {
+        subjectId: parseInt(subjectId),
+        teacherId: parseInt(teacherId),
+        startHour: parseHour(startHour),
+        endHour: parseHour(endHour),
+        students: selectedStudents,
+      };
+
+      const request = await API.post('/Class', payload);
+      const response: APIResponseBody = request.data;
+
+      if (response.success) {
+        if (response.message === 'class created but some students were not added') {
+          toast.show({
+            description: 'Clase creada pero algunos alumnos no fueron agregados',
+          });
+        } else {
+          toast.show({
+            description: 'Clase creada correctamente',
+          });
+        }
+
+        setSubjectId('');
+        setTeacherId('');
+        setStartHour(today);
+        setEndHour(today);
+        setSelectedStudents([]);
+        setCurrentStudents(allStudents);
+        setSearchStudent('');
+        return;
+      }
+
+      onCreateClassError();
+    } catch (error) {
+      console.error(error);
+      onCreateClassError();
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const getSubjects = async () => {
     const onGetSubjectsError = () => {
@@ -46,6 +150,7 @@ export default function AddClass() {
 
       if (response.success) {
         setSubjects(response.items);
+        getAllTeachers();
         return;
       }
 
@@ -53,8 +158,6 @@ export default function AddClass() {
     } catch (error) {
       onGetSubjectsError();
       console.error(error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -65,11 +168,10 @@ export default function AddClass() {
 
       if (teachersResponse.success) {
         setTeachers(teachersResponse.items);
+        getAllStudents();
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -79,12 +181,12 @@ export default function AddClass() {
       const studentResponse: StudentResponse = await getStudents();
 
       if (studentResponse.success) {
-        setStudents(studentResponse.items);
+        setCurrentStudents(studentResponse.items);
+        setAllStudents(studentResponse.items);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -110,14 +212,14 @@ export default function AddClass() {
     const index = selectedStudents.findIndex(student => student === studentId);
     if (index !== -1) {
       setSelectedStudents(prevValue => prevValue.filter(student => student !== studentId));
-      return;
+    } else {
+      setSelectedStudents(prevValue => [...prevValue, studentId]);
     }
-    setSelectedStudents(prevValue => [...prevValue, studentId]);
   };
 
   return (
     <ScreenWrapper screenTitle="Añadir Clase">
-      <ScrollView pinchGestureEnabled>
+      <ScrollView nestedScrollEnabled={true}>
         <Center>
           <Text color="white" mt="5" fontSize="lg" fontWeight="bold">
             ACADEMIA
@@ -163,7 +265,7 @@ export default function AddClass() {
           onPress={() => setShowStartHourPicker(prevValue => !prevValue)}
         >
           <Text color="white" textAlign="left" fontSize="xl">
-            {startHour.toLocaleTimeString()}
+            {parseHour(startHour)}
           </Text>
         </Button>
         {showStartHourPicker && (
@@ -186,7 +288,7 @@ export default function AddClass() {
           onPress={() => setShowEndHourPicker(prevValue => !prevValue)}
         >
           <Text color="white" textAlign="left" fontSize="xl">
-            {endHour.toLocaleTimeString()}
+            {parseHour(endHour)}
           </Text>
         </Button>
         {showEndHourPicker && (
@@ -197,9 +299,18 @@ export default function AddClass() {
             ALUMNOS
           </Text>
         </Center>
+        <CustomInput placeholderText="Buscar alumno" onChangeText={setSearchStudent} value={searchStudent} />
         {/* Students */}
-        <Checkbox.Group onChange={onSelectStudent} value={selectedStudents} accessibilityLabel="choose numbers">
-          {students.map(student => {
+        <ScrollView
+          borderColor="gray.500"
+          borderWidth="1"
+          borderRadius="lg"
+          maxH="32"
+          mt="3"
+          paddingX="2"
+          nestedScrollEnabled={true}
+        >
+          {currentStudents.map(student => {
             return (
               <Checkbox
                 value={student.id.toString()}
@@ -207,13 +318,18 @@ export default function AddClass() {
                 _text={{
                   color: 'white',
                 }}
+                isChecked={selectedStudents.includes(student.id.toString())}
+                onChange={() => onSelectStudent(student.id.toString())}
               >
-                {`${student.name} ${student.fatherlastname}`}
+                {`[${student.group}] - ${student.name} ${student.fatherlastname}`}
               </Checkbox>
             );
           })}
-        </Checkbox.Group>
-        <ActionButton text="GUARDAR" onPress={() => {}} />
+        </ScrollView>
+        <Text color="white" mt="3" fontSize="md" fontWeight="bold">
+          {`Número de alumnos: ${selectedStudents.length}`}
+        </Text>
+        {either(isLoading, <Spinner />, <ActionButton text="GUARDAR" onPress={onCreateClass} />)}
       </ScrollView>
     </ScreenWrapper>
   );

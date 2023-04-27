@@ -18,6 +18,7 @@ interface StudentInput {
   email: string;
   phone: string;
   groupId: number;
+  password: string;
 }
 
 export default function AddStudent() {
@@ -29,6 +30,9 @@ export default function AddStudent() {
   const [group, setGroup] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [groups, setGroups] = useState<BasicGroup[]>([]);
+  const [password, setPassword] = useState<string>('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState<string>('');
+
   const toast = useToast();
 
   const getAvailableGroups = async () => {
@@ -72,6 +76,7 @@ export default function AddStudent() {
           email,
           phone,
           groupId: parseInt(group),
+          password: password.trim(),
         };
 
         const request = await API.post('/Student', payload);
@@ -144,6 +149,24 @@ export default function AddStudent() {
       });
       return false;
     }
+    if (!password) {
+      toast.show({
+        description: 'La contraseña es requerida',
+      });
+      return false;
+    }
+    if (!passwordConfirmation) {
+      toast.show({
+        description: 'La confirmación de contraseña es requerida',
+      });
+      return false;
+    }
+    if (password !== passwordConfirmation) {
+      toast.show({
+        description: 'Las contraseñas no coinciden',
+      });
+      return false;
+    }
 
     return true;
   };
@@ -155,7 +178,6 @@ export default function AddStudent() {
         <CustomInput placeholderText="Apellido Paterno" value={fatherLastName} onChangeText={setFatherLastName} />
         <CustomInput placeholderText="Apellido Materno" value={motherLastName} onChangeText={setMotherLastName} />
         <CustomInput placeholderText="Correo Electrónico (Institucional)" value={email} onChangeText={setEmail} />
-        <CustomInput placeholderText="Teléfono" value={phone} onChangeText={setPhone} />
         <Select mt="5" size="lg" placeholder="Grupo" fontSize="xl" onValueChange={setGroup} color="white">
           {groups.map(group => {
             return (
@@ -167,6 +189,14 @@ export default function AddStudent() {
             );
           })}
         </Select>
+        <CustomInput placeholderText="Teléfono" value={phone} onChangeText={setPhone} />
+        <CustomInput type="password" placeholderText="Contraseña" value={password} onChangeText={setPassword} />
+        <CustomInput
+          type="password"
+          placeholderText="Confirmar contraseña"
+          value={passwordConfirmation}
+          onChangeText={setPasswordConfirmation}
+        />
         {either(isLoading, <Spinner />, <ActionButton text={'Guardar'} onPress={() => onSaveStudent()} />)}
       </ScrollView>
     </ScreenWrapper>
