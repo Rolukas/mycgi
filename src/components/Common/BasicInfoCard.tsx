@@ -31,7 +31,7 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({ title, onPress, items }) 
         {items?.map(item => {
           return (
             <Box flexDir="row">
-              <Box pt="3" pr="2">
+              <Box pt="3.5" pr="2">
                 <Icon name={item.icon} color="white" size={15} as={MaterialCommunityIcons} />
               </Box>
               <Text color="white" mt="2" fontSize="md">

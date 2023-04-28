@@ -313,6 +313,7 @@ export default function AddClass() {
           {currentStudents.map(student => {
             return (
               <Checkbox
+                key={`student-${student.id}`}
                 value={student.id.toString()}
                 my={2}
                 _text={{

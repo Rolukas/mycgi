@@ -15,6 +15,7 @@ interface StudentCard {
   name: string;
   fatherlastname: string;
   group: string;
+  numberOfClasses: number;
 }
 
 const Students = () => {
@@ -72,8 +73,8 @@ const Students = () => {
         icon: 'account-box',
       },
       {
-        fieldName: 'Materias',
-        fieldValue: '0',
+        fieldName: 'Clases',
+        fieldValue: item.numberOfClasses.toString(),
         icon: 'view-list',
       },
     ];
@@ -91,7 +92,7 @@ const Students = () => {
   return (
     <ScreenWrapper screenTitle={'Alumnos'}>
       <CustomInput placeholderText="Buscar Alumno" value={searchStudent} onChangeText={setSearchStudent} />
-      <Box mt="2">
+      <Box mt="2" flex="1">
         {either(
           isLoading,
           <Center>
