@@ -6,6 +6,7 @@ import AddGroup from '../AddGroup/AddGroup';
 import AddStudent from '../AddStudent/AddStudent';
 import AddSubject from '../AddSubject/AddSubject';
 import AddTeacher from '../AddTeacher/AddTeacher';
+import Class from '../Class/Class';
 import Groups from '../Groups/Groups';
 import Home from '../Home/Home';
 import Students from '../Students/Students';
@@ -31,7 +32,7 @@ const AppNavigator: React.FC = () => {
       <Stack.Screen name={AppScreens.Teachers} component={Teachers} />
       <Stack.Screen name={AppScreens.Subjects} component={Subjects} />
       <Stack.Screen name={AppScreens.AddSubject} component={AddSubject} />
-      {/* <Stack.Screen name={AppScreens.Classes} component={} /> */}
+      <Stack.Screen name={AppScreens.Classes} component={Class} />
       <Stack.Screen name={AppScreens.AddClass} component={AddClass} />
     </Stack.Navigator>
   );
