@@ -9,7 +9,9 @@ import ScreenWrapper from '../Common/ScreenWrapper';
 
 export interface Subject {
   id: number;
+  code: string;
   name: string;
+  numberOfClasses: number;
 }
 
 export interface SubjectsOutput extends APIResponseBody {
@@ -61,32 +63,30 @@ export default function Subjects() {
       return;
     }
 
-    const filteredSubjects = allSubjects.filter(subject =>
-      subject.name.toLowerCase().includes(searchSubject.toLowerCase()),
+    const filteredSubjects = allSubjects.filter(
+      subject =>
+        subject.name.toLowerCase().includes(searchSubject.toLowerCase()) ||
+        subject.name.toLowerCase().startsWith(searchSubject.toLowerCase()),
     );
     setCurrentSubjects(filteredSubjects);
   }, [searchSubject]);
 
   const renderItem = ({ item }: { item: Subject }) => {
-    const onSubjectPress = () => {
-      console.log(item.id);
-    };
-
     const items: BasicInfoCardItems[] = [
       {
         fieldName: 'No. de alumnos',
-        fieldValue: '10',
+        fieldValue: item.numberOfClasses.toString(),
         icon: 'account-box',
       },
     ];
 
-    return <BasicInfoCard key={item.id} title={`${item.name}`} items={items} onPress={onSubjectPress} />;
+    return <BasicInfoCard key={item.id} title={`${item.name}`} items={items} />;
   };
 
   return (
     <ScreenWrapper screenTitle="Añadir Materia">
       <CustomInput placeholderText="Buscar Materia" value={searchSubject} onChangeText={setSearchSubject} />
-      <Box mt="2">
+      <Box mt="2" flex="1">
         {either(
           isLoading,
           <Center>

@@ -2,11 +2,11 @@ import { Box, Center, FlatList, Spinner } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import getStudents from '../../api/Student/getStudents';
 import either from '../../functions/either';
-import { APIResponse } from '../../types/response';
+import { APIResponseBody } from '../../types/response';
 import BasicInfoCard, { BasicInfoCardItems } from '../Common/BasicInfoCard';
 import CustomInput from '../Common/CustomInput';
 import ScreenWrapper from '../Common/ScreenWrapper';
-interface StudentResponse extends APIResponse {
+interface StudentResponse extends APIResponseBody {
   items: StudentCard[];
 }
 interface StudentCard {
@@ -27,7 +27,7 @@ const Students = () => {
   const getAllStudents = async () => {
     try {
       setIsLoading(true);
-      const request = await getStudents();
+      const request: StudentResponse = await getStudents();
 
       if (request.success) {
         setAllStudents(request.items);
@@ -62,10 +62,6 @@ const Students = () => {
   }, []);
 
   const renderItem = ({ item }: { item: StudentCard }) => {
-    const onStudentPress = () => {
-      console.log(item.id);
-    };
-
     const items: BasicInfoCardItems[] = [
       {
         fieldName: 'Grupo',
@@ -79,14 +75,7 @@ const Students = () => {
       },
     ];
 
-    return (
-      <BasicInfoCard
-        key={item.id}
-        title={`${item.name} ${item.fatherlastname}`}
-        items={items}
-        onPress={onStudentPress}
-      />
-    );
+    return <BasicInfoCard key={item.id} title={`${item.name} ${item.fatherlastname}`} items={items} />;
   };
 
   return (

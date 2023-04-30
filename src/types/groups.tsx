@@ -3,4 +3,5 @@ export interface BasicGroup {
   letter: string;
   level: string;
   fullname: string;
+  numberOfStudents: number;
 }

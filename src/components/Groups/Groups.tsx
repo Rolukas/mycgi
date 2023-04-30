@@ -60,24 +60,22 @@ const Groups: React.FC = () => {
     }
   }, [searchGroup]);
 
-  const onGroupPress = () => {};
-
   const renderItem = ({ item }: { item: BasicGroup }) => {
     const items: BasicInfoCardItems[] = [
       {
         fieldName: 'Número de alumnos',
-        fieldValue: '3',
+        fieldValue: item.numberOfStudents.toString(),
         icon: 'account-box',
       },
     ];
 
-    return <BasicInfoCard key={item.id} title={`${item.fullname}`} items={items} onPress={onGroupPress} />;
+    return <BasicInfoCard key={item.id} title={`${item.fullname}`} items={items} />;
   };
 
   return (
     <ScreenWrapper screenTitle="Grupos">
       <CustomInput placeholderText="Buscar Grupo" value={searchGroup} onChangeText={setSearchGroup} />
-      <Box mt="2">
+      <Box mt="2" flex="1">
         {either(
           isLoading,
           <Center>

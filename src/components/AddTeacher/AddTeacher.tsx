@@ -13,6 +13,7 @@ interface TeacherInput {
   motherLastName: string;
   email: string;
   phone: string;
+  password: string;
 }
 
 const AddTeacher: React.FC = () => {
@@ -22,6 +23,8 @@ const AddTeacher: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [password, setPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
   const toast = useToast();
 
   const onSaveTeacherError = () => {
@@ -40,6 +43,7 @@ const AddTeacher: React.FC = () => {
           motherLastName,
           email,
           phone,
+          password,
         };
 
         const request = await API.post('/Teacher', payload);
@@ -61,6 +65,8 @@ const AddTeacher: React.FC = () => {
           setMotherLastName('');
           setEmail('');
           setPhone('');
+          setPassword('');
+          setConfirmPassword('');
           return;
         }
 
@@ -105,6 +111,24 @@ const AddTeacher: React.FC = () => {
       });
       return false;
     }
+    if (!password) {
+      toast.show({
+        description: 'La contraseña es requerida',
+      });
+      return false;
+    }
+    if (!confirmPassword) {
+      toast.show({
+        description: 'La confirmación de contraseña es requerida',
+      });
+      return false;
+    }
+    if (password !== confirmPassword) {
+      toast.show({
+        description: 'Las contraseñas no coinciden',
+      });
+      return false;
+    }
 
     return true;
   };
@@ -115,8 +139,10 @@ const AddTeacher: React.FC = () => {
         <CustomInput placeholderText="Nombre(s)" value={name} onChangeText={setName} />
         <CustomInput placeholderText="Apellido Paterno" value={fatherLastName} onChangeText={setFatherLastName} />
         <CustomInput placeholderText="Apellido Materno" value={motherLastName} onChangeText={setMotherLastName} />
-        <CustomInput placeholderText="Correo Electrónico (Institucional)" value={email} onChangeText={setEmail} />
         <CustomInput placeholderText="Teléfono" value={phone} onChangeText={setPhone} />
+        <CustomInput placeholderText="Correo Electrónico (Institucional)" value={email} onChangeText={setEmail} />
+        <CustomInput placeholderText="Contraseña" value={password} onChangeText={setPassword} />
+        <CustomInput placeholderText="Confirmar contraseña" value={confirmPassword} onChangeText={setConfirmPassword} />
         {either(isLoading, <Spinner />, <ActionButton text={'Guardar'} onPress={() => onSaveTeacher()} />)}
       </ScrollView>
     </ScreenWrapper>

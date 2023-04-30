@@ -34,9 +34,6 @@ const Login = () => {
       const usernamePasswordBuffer = Buffer.from(user + ':' + password);
       const base64data = usernamePasswordBuffer.toString('base64');
 
-      console.log(baseURL);
-      console.log('base64data', base64data);
-
       const request = await API.get(baseURL + '/Login', {
         headers: {
           Authorization: `Basic ${base64data}`,

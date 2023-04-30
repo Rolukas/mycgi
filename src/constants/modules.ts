@@ -7,9 +7,10 @@ enum ModuleCategory {
   Groups = 'Grupos',
   Subjects = 'Materias',
   Classes = 'Clases',
+  Teacher = 'Maestro',
 }
 
-const UIModulesList: UIModule[] = [
+const AdministratorModules: UIModule[] = [
   {
     name: 'Alumnos',
     icon: 'account-multiple',
@@ -81,5 +82,31 @@ const UIModulesList: UIModule[] = [
     category: ModuleCategory.Classes,
   },
 ];
+
+const TeacherModules: UIModule[] = [
+  {
+    name: 'Tomar asistencia',
+    icon: 'book-outline',
+    route: AppScreens.TakeAttendance,
+    backgroundColor: '#359DFD',
+    category: ModuleCategory.Teacher,
+  },
+  {
+    name: 'Registrar calificaciones',
+    icon: 'view-list',
+    route: AppScreens.RegisterGrades,
+    backgroundColor: '#0BA162',
+    category: ModuleCategory.Teacher,
+  },
+  {
+    name: 'Mis grupos',
+    icon: 'account-multiple',
+    route: AppScreens.MyGroups,
+    backgroundColor: '#FD9535',
+    category: ModuleCategory.Teacher,
+  },
+];
+
+const UIModulesList: UIModule[] = [...AdministratorModules, ...TeacherModules];
 
 export default UIModulesList;

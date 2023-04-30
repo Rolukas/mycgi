@@ -54,30 +54,21 @@ const Teachers = () => {
   }, []);
 
   const renderItem = ({ item }: { item: Teacher }) => {
-    const onTeacherPress = () => {
-      console.log(item.id);
-    };
-
     const items: BasicInfoCardItems[] = [
       {
-        fieldName: 'Clases',
-        fieldValue: '3',
+        fieldName: 'No. de clases',
+        fieldValue: item.numberOfClasses.toString(),
         icon: 'account-box',
-      },
-      {
-        fieldName: 'Materias',
-        fieldValue: '0',
-        icon: 'view-list',
       },
     ];
 
-    return <BasicInfoCard title={`${item.name} ${item.fatherlastname}`} items={items} onPress={onTeacherPress} />;
+    return <BasicInfoCard title={`${item.name} ${item.fatherlastname}`} items={items} />;
   };
 
   return (
     <ScreenWrapper screenTitle={'Maestros'}>
       <CustomInput placeholderText="Buscar Maestro" value={searchTeacher} onChangeText={setSearchTeacher} />
-      <Box mt="2">
+      <Box mt="2" flex="1">
         {either(
           isLoading,
           <Center>

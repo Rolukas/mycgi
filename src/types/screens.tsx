@@ -14,4 +14,7 @@ export const enum AppScreens {
   AddSubject = 'AddSubject',
   Classes = 'Classes',
   AddClass = 'AddClass',
+  TakeAttendance = 'TakeAttendance',
+  RegisterGrades = 'RegisterGrades',
+  MyGroups = 'MyGroups',
 }
