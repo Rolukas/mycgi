@@ -40,6 +40,11 @@ export default function AddSubject() {
       });
     };
 
+    if (!subjectName)
+      return toast.show({
+        description: 'Debes ingresar un nombre para la materia',
+      });
+
     try {
       Keyboard.dismiss();
       setIsLoading(true);

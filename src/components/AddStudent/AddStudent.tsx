@@ -99,6 +99,8 @@ export default function AddStudent() {
           setEmail('');
           setPhone('');
           setGroup('');
+          setPassword('');
+          setPasswordConfirmation('');
           return;
         }
 
@@ -190,9 +192,8 @@ export default function AddStudent() {
           })}
         </Select>
         <CustomInput placeholderText="Teléfono" value={phone} onChangeText={setPhone} />
-        <CustomInput type="password" placeholderText="Contraseña" value={password} onChangeText={setPassword} />
+        <CustomInput placeholderText="Contraseña" value={password} onChangeText={setPassword} />
         <CustomInput
-          type="password"
           placeholderText="Confirmar contraseña"
           value={passwordConfirmation}
           onChangeText={setPasswordConfirmation}

@@ -13,7 +13,7 @@ const Home = () => {
 
   useEffect(() => {
     toast.show({
-      title: 'Bienvenido',
+      title: 'Bienvenid@',
     });
   }, []);
 

@@ -12,6 +12,18 @@ interface ClassOutput extends APIResponseBody {
   items: BasicClassInfo[];
 }
 
+const formatDays = (days: string) => {
+  const splitDays = days.split('');
+  const formattedDays = splitDays.map(char => {
+    if (char === ',') {
+      return ', ';
+    } else {
+      return char;
+    }
+  });
+  return formattedDays.join('');
+};
+
 const Groups: React.FC = () => {
   const [currentClasses, setCurrentClasses] = useState<BasicClassInfo[]>([]);
   const [searchClass, setSearchClass] = useState<string>('');
@@ -76,6 +88,11 @@ const Groups: React.FC = () => {
         fieldName: 'No. de alumnos',
         fieldValue: item.numberOfStudents.toString(),
         icon: 'view-list',
+      },
+      {
+        fieldName: 'Días',
+        fieldValue: formatDays(item.days),
+        icon: 'calendar',
       },
     ];
 

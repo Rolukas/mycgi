@@ -4,4 +4,5 @@ export interface BasicClassInfo {
   teacherName: string;
   subjectName: string;
   numberOfStudents: number;
+  days: string;
 }

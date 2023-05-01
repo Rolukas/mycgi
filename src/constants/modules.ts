@@ -99,7 +99,7 @@ const TeacherModules: UIModule[] = [
     category: ModuleCategory.Teacher,
   },
   {
-    name: 'Mis grupos',
+    name: 'Mis clases',
     icon: 'account-multiple',
     route: AppScreens.MyGroups,
     backgroundColor: '#FD9535',

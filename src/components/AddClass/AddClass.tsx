@@ -18,15 +18,48 @@ interface ClassInput {
   startHour: string;
   endHour: string;
   students: string[];
+  days: string[];
 }
+
+interface Day {
+  name: string;
+  order: number;
+}
+
+const days: Day[] = [
+  {
+    name: 'L',
+    order: 1,
+  },
+  {
+    name: 'M',
+    order: 2,
+  },
+  {
+    name: 'Mi',
+    order: 3,
+  },
+  {
+    name: 'J',
+    order: 4,
+  },
+  {
+    name: 'V',
+    order: 5,
+  },
+  {
+    name: 'S',
+    order: 6,
+  },
+];
 
 export default function AddClass() {
   const today = new Date();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [subjectId, setSubjectId] = useState<string>('');
-  const [startHour, setStartHour] = useState<Date>(today);
-  const [endHour, setEndHour] = useState<Date>(today);
+  const [startHour, setStartHour] = useState<Date | null>(null);
+  const [endHour, setEndHour] = useState<Date | null>(null);
   const [showStartHourPicker, setShowStartHourPicker] = useState<boolean>(false);
   const [showEndHourPicker, setShowEndHourPicker] = useState<boolean>(false);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
@@ -35,6 +68,7 @@ export default function AddClass() {
   const [teacherId, setTeacherId] = useState<string>('');
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const [searchStudent, setSearchStudent] = useState<string>('');
+  const [selectedDays, setSelectedDays] = useState<Day[]>([]);
   const toast = useToast();
 
   useEffect(() => {
@@ -77,11 +111,47 @@ export default function AddClass() {
       });
       return false;
     }
+    if (selectedDays.length === 0) {
+      toast.show({
+        description: 'Selecciona al menos un día',
+      });
+      return false;
+    }
+    if (!startHour || !endHour) {
+      toast.show({
+        description: 'Selecciona una hora de inicio y fin',
+      });
+      return false;
+    }
+    if (startHour && endHour && startHour.getTime() >= endHour.getTime()) {
+      toast.show({
+        description: 'La hora de inicio debe ser menor a la hora de fin',
+      });
+      return false;
+    }
+    if (startHour && startHour.getHours() < 7) {
+      toast.show({
+        description: 'La hora de inicio debe ser mayor a las 7:00',
+      });
+      return false;
+    }
+    if (endHour && endHour.getHours() > 21) {
+      toast.show({
+        description: 'La hora de fin debe ser menor a las 21:00',
+      });
+      return false;
+    }
     return true;
   };
 
   const parseHour = (hour: Date) => {
     return `${hour.getHours()}:${hour.getMinutes()}`;
+  };
+
+  // Receives an array of days and returns an array with the names sorted by the order.
+  const parseSelectedDays = (selectedDays: Day[]): string[] => {
+    const sortedDays = selectedDays.sort((a, b) => a.order - b.order);
+    return sortedDays.map(day => day.name);
   };
 
   const onCreateClass = async () => {
@@ -97,9 +167,10 @@ export default function AddClass() {
       const payload: ClassInput = {
         subjectId: parseInt(subjectId),
         teacherId: parseInt(teacherId),
-        startHour: parseHour(startHour),
-        endHour: parseHour(endHour),
+        startHour: parseHour(startHour as Date),
+        endHour: parseHour(endHour as Date),
         students: selectedStudents,
+        days: parseSelectedDays(selectedDays),
       };
 
       const request = await API.post('/Class', payload);
@@ -118,11 +189,14 @@ export default function AddClass() {
 
         setSubjectId('');
         setTeacherId('');
-        setStartHour(today);
-        setEndHour(today);
+        setStartHour(null);
+        setEndHour(null);
         setSelectedStudents([]);
         setCurrentStudents(allStudents);
         setSearchStudent('');
+        setSelectedDays([]);
+        setShowStartHourPicker(false);
+        setShowEndHourPicker(false);
         return;
       }
 
@@ -217,6 +291,15 @@ export default function AddClass() {
     }
   };
 
+  const onDayPress = (day: Day) => {
+    const index = selectedDays.findIndex(selectedDay => selectedDay.name.toLowerCase() === day.name.toLowerCase());
+    if (index !== -1) {
+      setSelectedDays(prevValue => prevValue.filter(selectedDay => selectedDay.name !== day.name));
+    } else {
+      setSelectedDays(prevValue => [...prevValue, day]);
+    }
+  };
+
   return (
     <ScreenWrapper screenTitle="Añadir Clase">
       <ScrollView nestedScrollEnabled={true}>
@@ -264,15 +347,15 @@ export default function AddClass() {
           borderWidth="1"
           onPress={() => setShowStartHourPicker(prevValue => !prevValue)}
         >
-          <Text color="white" textAlign="left" fontSize="xl">
-            {parseHour(startHour)}
+          <Text color="white" textAlign="left" fontSize="lg">
+            {(startHour && parseHour(startHour)) || 'Selecciona una hora'}
           </Text>
         </Button>
         {showStartHourPicker && (
           <RNDateTimePicker
             is24Hour={true}
             mode="time"
-            value={startHour}
+            value={startHour || today}
             onChange={changeStartHour}
             display="spinner"
           />
@@ -287,13 +370,40 @@ export default function AddClass() {
           borderWidth="1"
           onPress={() => setShowEndHourPicker(prevValue => !prevValue)}
         >
-          <Text color="white" textAlign="left" fontSize="xl">
-            {parseHour(endHour)}
+          <Text color="white" textAlign="left" fontSize="lg">
+            {(endHour && parseHour(endHour)) || 'Selecciona una hora'}
           </Text>
         </Button>
         {showEndHourPicker && (
-          <RNDateTimePicker is24Hour={true} mode="time" value={endHour} onChange={changeEndHour} display="spinner" />
+          <RNDateTimePicker
+            is24Hour={true}
+            mode="time"
+            value={endHour || today}
+            onChange={changeEndHour}
+            display="spinner"
+          />
         )}
+        <Text color="white" fontSize="md" mt="5">
+          Días
+        </Text>
+        <Center mt="4" flex="1" flexDirection="row">
+          {days.map(day => {
+            return (
+              <Button
+                onPress={() => onDayPress(day)}
+                backgroundColor={selectedDays.includes(day) ? '#0BA162' : '#359DFD'}
+                width="10"
+                height="10"
+                borderRadius="20"
+                mr="3"
+              >
+                <Text color="white" fontWeight="bold">
+                  {day.name}
+                </Text>
+              </Button>
+            );
+          })}
+        </Center>
         <Center>
           <Text color="white" mt="5" fontSize="lg" fontWeight="bold">
             ALUMNOS
