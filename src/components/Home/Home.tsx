@@ -1,6 +1,6 @@
 import { Icon } from '@react-native-material/core';
-import { Box, Center, IconButton, Text, useToast } from 'native-base';
-import React, { useEffect } from 'react';
+import { Box, Center, IconButton, Text } from 'native-base';
+import React from 'react';
 import LogoWhite from '../../assets/images/logo_white.svg';
 import logOut from '../../functions/auth/logout';
 import either from '../../functions/either';
@@ -9,14 +9,6 @@ import Modules from '../Common/Modules';
 
 const Home = () => {
   const modules = useBuildModules();
-  const toast = useToast();
-
-  useEffect(() => {
-    toast.show({
-      title: 'Bienvenid@',
-      duration: 3000,
-    });
-  }, []);
 
   return (
     <Box flex="1" pb="10" backgroundColor="black">

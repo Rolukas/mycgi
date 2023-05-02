@@ -101,7 +101,7 @@ const TeacherModules: UIModule[] = [
   {
     name: 'Mis clases',
     icon: 'account-multiple',
-    route: AppScreens.MyGroups,
+    route: AppScreens.MyClasses,
     backgroundColor: '#FD9535',
     category: ModuleCategory.Teacher,
   },

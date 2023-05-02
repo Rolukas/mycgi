@@ -8,7 +8,7 @@ import { APIResponseBody } from '../../types/response';
 import { AppScreens } from '../../types/screens';
 import ScreenWrapper from '../Common/ScreenWrapper';
 
-interface ClassByTeacher {
+export interface ClassByTeacher {
   id: number;
   subjectName: string;
   numberOfStudents: number;
