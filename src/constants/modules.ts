@@ -94,7 +94,7 @@ const TeacherModules: UIModule[] = [
   {
     name: 'Registrar calificaciones',
     icon: 'view-list',
-    route: AppScreens.RegisterGrades,
+    route: AppScreens.RegisterGrades_HOME,
     backgroundColor: '#0BA162',
     category: ModuleCategory.Teacher,
   },
