@@ -3,5 +3,6 @@ export interface Student {
   code: string;
   name: string;
   fatherlastname: string;
+  motherlastname: string;
   group: string;
 }

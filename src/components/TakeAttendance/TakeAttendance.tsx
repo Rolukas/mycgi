@@ -1,116 +1,138 @@
-import { Box, Button, Center, Text, useToast } from 'native-base';
+import { useNavigation } from '@react-navigation/native';
+import { Box, Center, Checkbox, ScrollView, Spinner, Text, useToast } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import API from '../../functions/api/API';
+import either from '../../functions/either';
+import getCurrentFriendlyDate from '../../functions/getCurrentFriendlyDate';
 import { APIResponseBody } from '../../types/response';
+import { Student } from '../../types/student';
+import ActionButton from '../Common/ActionButton';
 import ScreenWrapper from '../Common/ScreenWrapper';
 
-interface ClassByTeacher {
-  id: number;
-  subjectName: string;
-  numberOfStudents: number;
-  days: string;
-  startHour: string;
-  endHour: string;
+interface StudentsForAttendanceResponse extends APIResponseBody {
+  items: Student[];
 }
 
-export interface ClassByTeacherResponse extends APIResponseBody {
-  items: ClassByTeacher[];
+interface StudentsAttendanceInput {
+  classId: number;
+  attendances: number[];
 }
 
-// Returs a date with format 'Viernes, 12 de Marzo'
-const getCurrentDate = (): string => {
-  const date = new Date();
-  const day = date.getDate();
-  const getMonthName = (month: number): string => {
-    switch (month) {
-      case 0:
-        return 'Enero';
-      case 1:
-        return 'Febrero';
-      case 2:
-        return 'Marzo';
-      case 3:
-        return 'Abril';
-      case 4:
-        return 'Mayo';
-      case 5:
-        return 'Junio';
-      case 6:
-        return 'Julio';
-      case 7:
-        return 'Agosto';
-      case 8:
-        return 'Septiembre';
-      case 9:
-        return 'Octubre';
-      case 10:
-        return 'Noviembre';
-      case 11:
-        return 'Diciembre';
-      default:
-        return '';
-    }
-  };
-  const month = getMonthName(date.getMonth());
-  const year = date.getFullYear();
-
-  return `${day} de ${month} de ${year}`;
-};
-
-export default function TakeAttendance() {
+const TakeAttendance = ({ route }) => {
+  const { classId, subjectName } = route.params;
+  const [isLoading, setIsLoading] = useState(false);
+  const [students, setStudents] = useState<Student[]>([]);
   const toast = useToast();
-  const [classes, setClasses] = useState<ClassByTeacher[]>([]);
+  const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
+  const navigation = useNavigation();
 
   useEffect(() => {
-    getClassesByTeacher();
+    getStudentsForAttendance();
   }, []);
 
-  const getClassesByTeacher = async () => {
-    const onGetClassesError = () => {
+  const onSaveAttendance = async () => {
+    const onSaveAttendanceError = () => {
       toast.show({
-        description: 'Error al obtener clases',
+        description: 'Error al guardar asistencia',
       });
     };
 
     try {
-      const request = await API.get('/ClassesByTeacher');
-      const response: ClassByTeacherResponse = await request.data;
+      setIsLoading(true);
 
-      if (response.items.length === 0) {
-        toast.show({
-          description: 'No hay clases disponibles',
-        });
-        return;
-      }
+      const payload: StudentsAttendanceInput = {
+        classId,
+        attendances: selectedStudents.map(studentId => parseInt(studentId)),
+      };
+
+      const request = await API.post('/Attendance', payload);
+      const response: StudentsForAttendanceResponse = await request.data;
 
       if (response.success === true) {
-        setClasses(response.items);
+        toast.show({
+          description: 'Asistencia guardada',
+        });
+        navigation.goBack();
         return;
       }
 
-      onGetClassesError();
+      onSaveAttendanceError();
     } catch (e) {
       console.error(e);
-      onGetClassesError();
+      onSaveAttendanceError();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getStudentsForAttendance = async () => {
+    const onGetStudentsForAttendanceError = () => {
+      toast.show({
+        description: 'Error al obtener estudiantes',
+      });
+    };
+
+    try {
+      setIsLoading(true);
+      const request = await API.get(`StudentsByClass/${classId}`);
+      const response: StudentsForAttendanceResponse = await request.data;
+
+      if (response.success === true) {
+        setStudents(response.items);
+        return;
+      }
+
+      onGetStudentsForAttendanceError();
+    } catch (e) {
+      console.error(e);
+      onGetStudentsForAttendanceError();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onSelectStudent = (studentId: string) => {
+    const index = selectedStudents.findIndex(student => student === studentId);
+    if (index !== -1) {
+      setSelectedStudents(prevValue => prevValue.filter(student => student !== studentId));
+    } else {
+      setSelectedStudents(prevValue => [...prevValue, studentId]);
     }
   };
 
   return (
     <ScreenWrapper screenTitle="Tomar asistencia">
-      <Center>
-        <Text mt="3" fontSize="lg" mb="2" color="white">
-          {getCurrentDate()}
+      <Center mt="5">
+        <Text color="white" fontSize="xl">
+          {getCurrentFriendlyDate()}
         </Text>
+        <Box borderColor="white" borderWidth="1" borderRadius="lg" mt="3">
+          <Text fontSize="xl" mx="5" my="1" color="white">
+            {subjectName}
+          </Text>
+        </Box>
       </Center>
-      <Box backgroundColor="#333333" paddingX="10" paddingY="3" mt="2" borderRadius="md">
-        {classes.map((classInfo, index) => (
-          <Button key={`class-${index}`} backgroundColor="#359DFD" borderRadius="xl" mt="2" mb="2">
-            <Text color="white" fontWeight="bold" fontSize="lg">
-              {classInfo.subjectName}
-            </Text>
-          </Button>
-        ))}
+      <Box backgroundColor="#333333" paddingX="5" paddingY="3" mt="5" borderRadius="md" maxH="40%">
+        <ScrollView nestedScrollEnabled={true}>
+          {students.map((student, index) => (
+            <Checkbox
+              key={`${student.id}-${index}`}
+              value={student.id.toString()}
+              my={2}
+              _text={{
+                color: 'white',
+              }}
+              isChecked={selectedStudents.includes(student.id.toString())}
+              onChange={() => onSelectStudent(student.id.toString())}
+            >
+              {`${student.name} ${student.fatherlastname} ${student.motherlastname}`}
+            </Checkbox>
+          ))}
+        </ScrollView>
       </Box>
+      {either(isLoading, <Spinner size="lg" mt="2" />, <ActionButton text="GUARDAR" onPress={onSaveAttendance} />)}
     </ScreenWrapper>
   );
-}
+};
+
+export default TakeAttendance;

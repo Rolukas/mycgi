@@ -14,6 +14,7 @@ const Home = () => {
   useEffect(() => {
     toast.show({
       title: 'Bienvenid@',
+      duration: 3000,
     });
   }, []);
 

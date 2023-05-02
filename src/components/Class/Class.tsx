@@ -1,6 +1,7 @@
 import { Box, Center, FlatList, Spinner, useToast } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import API from '../../functions/api/API';
+import formatDays from '../../functions/days';
 import either from '../../functions/either';
 import { BasicClassInfo } from '../../types/class';
 import { APIResponseBody } from '../../types/response';
@@ -11,18 +12,6 @@ import ScreenWrapper from '../Common/ScreenWrapper';
 interface ClassOutput extends APIResponseBody {
   items: BasicClassInfo[];
 }
-
-const formatDays = (days: string) => {
-  const splitDays = days.split('');
-  const formattedDays = splitDays.map(char => {
-    if (char === ',') {
-      return ', ';
-    } else {
-      return char;
-    }
-  });
-  return formattedDays.join('');
-};
 
 const Groups: React.FC = () => {
   const [currentClasses, setCurrentClasses] = useState<BasicClassInfo[]>([]);

@@ -11,6 +11,7 @@ import Groups from '../Groups/Groups';
 import Home from '../Home/Home';
 import Students from '../Students/Students';
 import Subjects from '../Subjects/Subjects';
+import TakeAttendance_HOME from '../TakeAttendance/Home';
 import TakeAttendance from '../TakeAttendance/TakeAttendance';
 import Teachers from '../Teachers/Teachers';
 
@@ -24,6 +25,7 @@ const AppNavigator: React.FC = () => {
         headerShown: false,
       }}
     >
+      {}
       <Stack.Screen name={AppScreens.Home} component={Home} />
       <Stack.Screen name={AppScreens.AddStudent} component={AddStudent} />
       <Stack.Screen name={AppScreens.Students} component={Students} />
@@ -36,6 +38,7 @@ const AppNavigator: React.FC = () => {
       <Stack.Screen name={AppScreens.Classes} component={Class} />
       <Stack.Screen name={AppScreens.AddClass} component={AddClass} />
       {/* TEACHER MODULES */}
+      <Stack.Screen name={AppScreens.TakeAttendance_HOME} component={TakeAttendance_HOME} />
       <Stack.Screen name={AppScreens.TakeAttendance} component={TakeAttendance} />
     </Stack.Navigator>
   );

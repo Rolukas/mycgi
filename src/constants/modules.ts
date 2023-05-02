@@ -87,7 +87,7 @@ const TeacherModules: UIModule[] = [
   {
     name: 'Tomar asistencia',
     icon: 'book-outline',
-    route: AppScreens.TakeAttendance,
+    route: AppScreens.TakeAttendance_HOME,
     backgroundColor: '#359DFD',
     category: ModuleCategory.Teacher,
   },
