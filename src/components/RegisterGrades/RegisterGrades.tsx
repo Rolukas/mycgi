@@ -76,7 +76,7 @@ export default function RegisterGrades({ route }) {
             }),
           };
         });
-        console.log(JSON.stringify(buildRegisterGradesObject, null, 2));
+
         setGrades(buildRegisterGradesObject);
         return;
       }
@@ -98,7 +98,7 @@ export default function RegisterGrades({ route }) {
     };
     try {
       setIsLoading(true);
-      console.log(JSON.stringify(grades, null, 2));
+
       const payload: GradesInput = {
         weekId,
         classId,

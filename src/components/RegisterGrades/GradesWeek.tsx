@@ -39,8 +39,6 @@ const RegisterGrades_WEEKS = ({ route }) => {
       const request = await API.get(`WeeksByClass/${classId}`);
       const response: WeekResponse = await request.data;
 
-      console.log(JSON.stringify(response, null, 2));
-
       if (response.success === true) {
         setWeeks(response.items);
         return;
