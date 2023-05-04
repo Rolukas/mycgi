@@ -49,7 +49,7 @@ export default function RegisterGrades_HOME() {
   };
 
   const goToWeeksScreen = (classId: number, subjectName: string) => {
-    navigation.navigate(AppScreens.RegisterGrades, { classId, subjectName });
+    navigation.navigate(AppScreens.RegisterGrades_WEEKS, { classId, subjectName });
   };
 
   return (

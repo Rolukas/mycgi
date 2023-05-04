@@ -110,13 +110,13 @@ export default function TakeAttendance_HOME() {
               </Button>
             </Box>
           ))}
+        <Text color="white" fontSize="lg" fontWeight="bold">
+          Clases
+        </Text>
         {classes
           .filter(c => !c.isCurrent)
           .map((classInfo, index) => (
             <Box key={`class-${index}-${classInfo.id}`}>
-              <Text color="white" fontSize="lg" fontWeight="bold">
-                Clases
-              </Text>
               <Button
                 onPress={() => goToTakeAttendanceScreen(classInfo.id, classInfo.subjectName, classInfo.isBlocked)}
                 backgroundColor="#359DFD"

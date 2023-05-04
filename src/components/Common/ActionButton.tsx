@@ -12,7 +12,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({ onPress, text }) => {
   };
 
   return (
-    <Button mt="10" borderRadius="xl" backgroundColor="#0BA162" onPress={handlePress}>
+    <Button mt="5" borderRadius="xl" backgroundColor="#0BA162" onPress={handlePress}>
       <Text color="white" fontSize="md" fontWeight="bold">
         {text}
       </Text>

@@ -5,6 +5,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import API from '../../functions/api/API';
 import either from '../../functions/either';
 import { APIResponseBody } from '../../types/response';
+import { AppScreens } from '../../types/screens';
 import { Week } from '../../types/week';
 import ScreenWrapper from '../Common/ScreenWrapper';
 
@@ -12,7 +13,7 @@ interface WeekResponse extends APIResponseBody {
   items: Week[];
 }
 
-const RegisterGrades = ({ route }) => {
+const RegisterGrades_WEEKS = ({ route }) => {
   const { classId, subjectName } = route.params;
   const toast = useToast();
   const [weeks, setWeeks] = useState<Week[]>([]);
@@ -37,7 +38,9 @@ const RegisterGrades = ({ route }) => {
       setIsLoading(true);
       const request = await API.get(`WeeksByClass/${classId}`);
       const response: WeekResponse = await request.data;
-      console.log(response.items);
+
+      console.log(JSON.stringify(response, null, 2));
+
       if (response.success === true) {
         setWeeks(response.items);
         return;
@@ -52,7 +55,7 @@ const RegisterGrades = ({ route }) => {
     }
   };
 
-  const goToRegisterGradesScreen = (weekId: number, isLocked: boolean) => {
+  const goToRegisterGradesScreen = (weekId: number, isLocked: boolean, weekNumber: number) => {
     // TODO: Add navigation to TakeAttendance screen
     if (isLocked) {
       toast.show({
@@ -60,14 +63,30 @@ const RegisterGrades = ({ route }) => {
       });
       return;
     }
+    navigation.navigate(AppScreens.RegisterGrades, {
+      weekId,
+      classId,
+      subjectName,
+      weekNumber,
+    });
+  };
+
+  const getWeekColor = (weekNumber: number) => {
+    if (weekNumber > 0 && weekNumber <= 6) {
+      return '#359DFD';
+    } else if (weekNumber >= 7 && weekNumber <= 12) {
+      return '#0BA162';
+    } else {
+      return '#FD9535';
+    }
   };
 
   const renderItem = ({ item }: { item: Week }) => {
     return (
       <Box key={`week-${item.id}`}>
         <Button
-          onPress={() => goToRegisterGradesScreen(item.id, item.isLocked)}
-          backgroundColor={item.isLocked ? '#FD3535' : '#359DFD'}
+          onPress={() => goToRegisterGradesScreen(item.id, item.isLocked, item.number)}
+          backgroundColor={item.isLocked ? '#FD3535' : getWeekColor(item.number)}
           borderRadius="xl"
           mt="2"
           mb="2"
@@ -111,4 +130,4 @@ const RegisterGrades = ({ route }) => {
   );
 };
 
-export default RegisterGrades;
+export default RegisterGrades_WEEKS;
