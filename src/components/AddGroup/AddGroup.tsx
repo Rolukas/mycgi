@@ -45,7 +45,7 @@ export default function AddGroup() {
 
       const payload: GroupInput = {
         level: groupNumber,
-        letter: groupLetter,
+        letter: groupLetter.toUpperCase(),
       };
 
       const request = await API.post('/Group', payload);
@@ -87,12 +87,17 @@ export default function AddGroup() {
       />
       <CustomInput
         placeholderText="Letra de grupo Ej. (A,B,C)"
-        value={groupLetter}
+        value={groupLetter.toUpperCase()}
         onChangeText={setGroupLetter}
         maxLength={1}
       />
       <Center>
-        <Text fontSize="2xl" fontWeight="bold" mt="5" color="white">{`Grupo: ${groupNumber}${groupLetter}`}</Text>
+        <Text
+          fontSize="2xl"
+          fontWeight="bold"
+          mt="5"
+          color="white"
+        >{`Grupo: ${groupNumber}${groupLetter.toUpperCase()}`}</Text>
       </Center>
       <ActionButton text="Guardar" onPress={onSaveGroup} />
     </ScreenWrapper>

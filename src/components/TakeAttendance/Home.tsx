@@ -55,7 +55,7 @@ export default function TakeAttendance_HOME() {
       }
 
       if (response.success === true) {
-        setClasses(response.items);
+        setClasses(response.items.filter(c => c.isToday));
         return;
       }
 
