@@ -13,9 +13,10 @@ export interface BasicInfoCardProps {
   title: string;
   items?: BasicInfoCardItems[];
   onPress?: () => void;
+  key?: string | number;
 }
 
-const BasicInfoCard: React.FC<BasicInfoCardProps> = ({ title, onPress, items }) => {
+const BasicInfoCard: React.FC<BasicInfoCardProps> = ({ title, onPress, items, key }) => {
   const handlePress = () => {
     if (onPress) {
       onPress();
@@ -23,7 +24,7 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({ title, onPress, items }) 
   };
 
   return (
-    <Box backgroundColor={'#333333'} borderRadius="lg" paddingX="5" paddingY="2" mt="3">
+    <Box key={key} backgroundColor={'#333333'} borderRadius="lg" paddingX="5" paddingY="2" mt="3">
       <Text color="white" fontSize="xl" fontWeight="bold">
         {title}
       </Text>

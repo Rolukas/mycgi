@@ -62,7 +62,7 @@ const Teachers = () => {
       },
     ];
 
-    return <BasicInfoCard title={`${item.name} ${item.fatherlastname}`} items={items} />;
+    return <BasicInfoCard key={item.id} title={`${item.name} ${item.fatherlastname}`} items={items} />;
   };
 
   return (
