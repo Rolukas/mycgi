@@ -19,5 +19,6 @@ export const enum AppScreens {
   RegisterGrades_HOME = 'RegisterGrades_HOME',
   RegisterGrades_WEEKS = 'RegisterGrades_WEEKS',
   RegisterGrades = 'RegisterGrades',
-  MyClasses = 'MyClasses',
+  MyClasses_Teacher = 'MyClasses_Teacher',
+  MyClasses_Student = 'MyClasses_Student',
 }

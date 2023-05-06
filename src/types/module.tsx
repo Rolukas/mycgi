@@ -6,6 +6,7 @@ export interface Module {
 }
 
 export interface UIModule {
+  id: number;
   name: string;
   icon: string;
   route: string;

@@ -11,9 +11,7 @@ const useBuildModules = () => {
   useEffect(() => {
     const filteredModules: UIModule[] = [];
     UIModulesList.forEach(module => {
-      const searchModule = allowedModules.find(
-        allowedModule => allowedModule.name.toLowerCase() === module.name.toLowerCase(),
-      );
+      const searchModule = allowedModules.find(allowedModule => allowedModule.id === module.id);
       if (searchModule) {
         filteredModules.push(module);
       }

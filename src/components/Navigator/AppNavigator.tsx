@@ -29,7 +29,6 @@ const AppNavigator: React.FC = () => {
         headerShown: false,
       }}
     >
-      {}
       <Stack.Screen name={AppScreens.Home} component={Home} />
       <Stack.Screen name={AppScreens.AddStudent} component={AddStudent} />
       <Stack.Screen name={AppScreens.Students} component={Students} />
@@ -44,10 +43,11 @@ const AppNavigator: React.FC = () => {
       {/* TEACHER MODULES */}
       <Stack.Screen name={AppScreens.TakeAttendance_HOME} component={TakeAttendance_HOME} />
       <Stack.Screen name={AppScreens.TakeAttendance} component={TakeAttendance} />
-      <Stack.Screen name={AppScreens.MyClasses} component={MyClasses} />
+      <Stack.Screen name={AppScreens.MyClasses_Teacher} component={MyClasses} />
       <Stack.Screen name={AppScreens.RegisterGrades_HOME} component={RegisterGrades_HOME} />
       <Stack.Screen name={AppScreens.RegisterGrades_WEEKS} component={RegisterGrades_WEEKS} />
       <Stack.Screen name={AppScreens.RegisterGrades} component={RegisterGrades} />
+      {/* STUDENT MODULES */}
     </Stack.Navigator>
   );
 };
