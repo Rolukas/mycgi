@@ -21,4 +21,5 @@ export const enum AppScreens {
   RegisterGrades = 'RegisterGrades',
   MyClasses_Teacher = 'MyClasses_Teacher',
   MyClasses_Student = 'MyClasses_Student',
+  StudentClassDetail = 'StudentClassDetail',
 }

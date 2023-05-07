@@ -10,6 +10,8 @@ import Class from '../Class/Class';
 import Groups from '../Groups/Groups';
 import Home from '../Home/Home';
 import MyClasses from '../MyClasses/MyClasses';
+import ClassDetail from '../MyClasses_Student/ClassDetail';
+import MyClasses_Student from '../MyClasses_Student/MyClasses';
 import RegisterGrades_WEEKS from '../RegisterGrades/GradesWeek';
 import RegisterGrades_HOME from '../RegisterGrades/Home';
 import RegisterGrades from '../RegisterGrades/RegisterGrades';
@@ -48,6 +50,8 @@ const AppNavigator: React.FC = () => {
       <Stack.Screen name={AppScreens.RegisterGrades_WEEKS} component={RegisterGrades_WEEKS} />
       <Stack.Screen name={AppScreens.RegisterGrades} component={RegisterGrades} />
       {/* STUDENT MODULES */}
+      <Stack.Screen name={AppScreens.MyClasses_Student} component={MyClasses_Student} />
+      <Stack.Screen name={AppScreens.StudentClassDetail} component={ClassDetail} />
     </Stack.Navigator>
   );
 };

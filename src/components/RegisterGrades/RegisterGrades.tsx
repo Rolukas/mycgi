@@ -44,6 +44,8 @@ export default function RegisterGrades({ route }) {
   const { weekId, classId, subjectName, weekNumber } = route.params;
   const [grades, setGrades] = useState<GradesByStudent[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [maxValue, setMaxValue] = useState<number>(5);
+  const [minValue, setMinValue] = useState<number>(0);
   const navigation = useNavigation();
   const toast = useToast();
 
@@ -76,7 +78,8 @@ export default function RegisterGrades({ route }) {
             }),
           };
         });
-
+        setMaxValue(response.items.criteria[0].maxValue);
+        setMinValue(response.items.criteria[0].minValue);
         setGrades(buildRegisterGradesObject);
         return;
       }
@@ -167,7 +170,7 @@ export default function RegisterGrades({ route }) {
                       const value = parseInt(text);
                       if (value > 5) {
                         toast.show({
-                          title: 'La calificación no puede ser mayor a 5',
+                          title: `La calificación no puede ser mayor a ${maxValue}`,
                         });
                         return;
                       }
