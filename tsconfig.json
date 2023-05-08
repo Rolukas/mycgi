@@ -14,7 +14,7 @@
       "esModuleInterop": true,
       "allowSyntheticDefaultImports": true,
       "skipLibCheck": true,
-      "typeRoots": ["./node_modules/@types"]
+      "typeRoots": ["./node_modules/@types", "./src/cutsom.d.ts"]
     },
     "exclude": [
       "node_modules", "babel.config.js", "metro.config.js", "jest.config.js"

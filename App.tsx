@@ -6,6 +6,7 @@
  * @flow strict-local
  */
 
+import { BASE_URL } from '@env';
 import { IconComponentProvider } from '@react-native-material/core';
 import { NavigationContainer } from '@react-navigation/native';
 import { NativeBaseProvider } from 'native-base';
@@ -16,7 +17,7 @@ import { Provider, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import AppNavigator from './src/components/Navigator/AppNavigator';
 import AuthNavigator from './src/components/Navigator/AuthNavigator';
-import API, { baseURL } from './src/functions/api/API';
+import API from './src/functions/api/API';
 import useIsLoggedIn from './src/hooks/useIsLoggedIn';
 import { selectAuthToken } from './src/store/selectors';
 import { persistor, store } from './src/store/store';
@@ -27,7 +28,9 @@ const Main = () => {
   const token = useSelector(selectAuthToken);
 
   useEffect(() => {
-    API.defaults.baseURL = baseURL;
+    console.log('=> BASE');
+    console.log(BASE_URL);
+    API.defaults.baseURL = BASE_URL;
   }, []);
 
   useEffect(() => {
