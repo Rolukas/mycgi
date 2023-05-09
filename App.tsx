@@ -6,7 +6,6 @@
  * @flow strict-local
  */
 
-import { BASE_URL } from '@env';
 import { IconComponentProvider } from '@react-native-material/core';
 import { NavigationContainer } from '@react-navigation/native';
 import { NativeBaseProvider } from 'native-base';
@@ -29,8 +28,8 @@ const Main = () => {
 
   useEffect(() => {
     console.log('=> BASE');
-    console.log(BASE_URL);
-    API.defaults.baseURL = BASE_URL;
+    console.log(process.env.BASE_URL);
+    API.defaults.baseURL = process.env.BASE_URL;
   }, []);
 
   useEffect(() => {

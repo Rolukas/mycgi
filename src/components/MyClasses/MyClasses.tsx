@@ -27,13 +27,6 @@ export default function MyClasses() {
       const request = await API.get('/ClassesByTeacher');
       const response: ClassByTeacherResponse = await request.data;
 
-      if (response.items.length === 0) {
-        toast.show({
-          description: 'No hay clases disponibles',
-        });
-        return;
-      }
-
       if (response.success === true) {
         setClasses(response.items);
         return;

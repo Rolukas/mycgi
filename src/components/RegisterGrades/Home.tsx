@@ -1,5 +1,5 @@
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { Box, Button, Text, useToast } from 'native-base';
+import { Box, Button, ScrollView, Text, useToast } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import API from '../../functions/api/API';
 import { AppScreens } from '../../types/screens';
@@ -54,7 +54,16 @@ export default function RegisterGrades_HOME() {
 
   return (
     <ScreenWrapper screenTitle="Registrar calificaciones">
-      <Box backgroundColor="#333333" paddingX="5" paddingY="3" mt="2" borderRadius="md">
+      <ScrollView
+        contentContainerStyle={{
+          paddingBottom: 20,
+        }}
+        backgroundColor="#333333"
+        paddingX="5"
+        paddingY="3"
+        mt="2"
+        borderRadius="md"
+      >
         {classes.map((classInfo, index) => (
           <Box key={`class-${index}-${classInfo.id}`}>
             <Button
@@ -70,7 +79,7 @@ export default function RegisterGrades_HOME() {
             </Button>
           </Box>
         ))}
-      </Box>
+      </ScrollView>
     </ScreenWrapper>
   );
 }

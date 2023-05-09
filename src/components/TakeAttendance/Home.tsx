@@ -1,5 +1,5 @@
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { Box, Button, Center, Icon, Text, useToast } from 'native-base';
+import { Box, Button, Center, Icon, ScrollView, Text, useToast } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import API from '../../functions/api/API';
@@ -84,7 +84,17 @@ export default function TakeAttendance_HOME() {
           {getCurrentFriendlyDate()}
         </Text>
       </Center>
-      <Box backgroundColor="#333333" paddingX="5" paddingY="3" mt="2" borderRadius="md">
+      <ScrollView
+        _contentContainerStyle={{
+          paddingBottom: 20,
+        }}
+        backgroundColor="#333333"
+        paddingX="5"
+        paddingY="3"
+        mt="2"
+        borderRadius="md"
+        flex="1"
+      >
         {classes
           .filter(c => c.isCurrent)
           .map((classInfo, index) => (
@@ -135,7 +145,7 @@ export default function TakeAttendance_HOME() {
               </Button>
             </Box>
           ))}
-      </Box>
+      </ScrollView>
     </ScreenWrapper>
   );
 }

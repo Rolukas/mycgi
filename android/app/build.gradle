@@ -229,6 +229,12 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            storeFile file('mycgi-key.keystore')
+            storePassword 'mycgi-frontend'
+            keyAlias 'your_key_alias'
+            keyPassword 'mycgi-frontend'
+        }
     }
     buildTypes {
         debug {

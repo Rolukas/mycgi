@@ -1,4 +1,5 @@
 import RNDateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import { useNavigation } from '@react-navigation/native';
 import { Button, Center, Checkbox, ScrollView, Select, Spinner, Text, useToast } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import getStudents, { StudentResponse } from '../../api/Student/getStudents';
@@ -57,7 +58,7 @@ export default function AddClass() {
   const today = new Date();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [subjects, setSubjects] = useState<Subject[]>([]);
-  const [subjectId, setSubjectId] = useState<string>('');
+  const [subjectId, setSubjectId] = useState<string | undefined>(undefined);
   const [startHour, setStartHour] = useState<Date | null>(null);
   const [endHour, setEndHour] = useState<Date | null>(null);
   const [showStartHourPicker, setShowStartHourPicker] = useState<boolean>(false);
@@ -65,11 +66,12 @@ export default function AddClass() {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [currentStudents, setCurrentStudents] = useState<Student[]>([]);
   const [allStudents, setAllStudents] = useState<Student[]>([]);
-  const [teacherId, setTeacherId] = useState<string>('');
+  const [teacherId, setTeacherId] = useState<string | undefined>(undefined);
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const [searchStudent, setSearchStudent] = useState<string>('');
   const [selectedDays, setSelectedDays] = useState<Day[]>([]);
   const toast = useToast();
+  const navigation = useNavigation();
 
   useEffect(() => {
     getSubjects();
@@ -93,13 +95,13 @@ export default function AddClass() {
   }, [searchStudent]);
 
   const allFieldsAreFilled = () => {
-    if (subjectId === '') {
+    if (!subjectId) {
       toast.show({
         description: 'Selecciona una materia',
       });
       return false;
     }
-    if (teacherId === '') {
+    if (!teacherId) {
       toast.show({
         description: 'Selecciona un maestro',
       });
@@ -145,7 +147,13 @@ export default function AddClass() {
   };
 
   const parseHour = (hour: Date) => {
-    return `${hour.getHours()}:${hour.getMinutes()}`;
+    const checkIfMinuteIsLessThanTen = (minute: number) => {
+      if (minute < 10) {
+        return `0${minute}`;
+      }
+      return minute;
+    };
+    return `${hour.getHours()}:${checkIfMinuteIsLessThanTen(hour.getMinutes())}`;
   };
 
   // Receives an array of days and returns an array with the names sorted by the order.
@@ -165,8 +173,8 @@ export default function AddClass() {
 
       setIsLoading(true);
       const payload: ClassInput = {
-        subjectId: parseInt(subjectId),
-        teacherId: parseInt(teacherId),
+        subjectId: parseInt(subjectId!),
+        teacherId: parseInt(teacherId!),
         startHour: parseHour(startHour as Date),
         endHour: parseHour(endHour as Date),
         students: selectedStudents,
@@ -187,16 +195,7 @@ export default function AddClass() {
           });
         }
 
-        setSubjectId('');
-        setTeacherId('');
-        setStartHour(null);
-        setEndHour(null);
-        setSelectedStudents([]);
-        setCurrentStudents(allStudents);
-        setSearchStudent('');
-        setSelectedDays([]);
-        setShowStartHourPicker(false);
-        setShowEndHourPicker(false);
+        navigation.goBack();
         return;
       }
 
@@ -269,6 +268,7 @@ export default function AddClass() {
       type,
       nativeEvent: { timestamp },
     } = event;
+    if (event.type === 'dismissed') return setShowStartHourPicker(false);
     if (date) setStartHour(date);
     setShowStartHourPicker(false);
   };
@@ -278,6 +278,7 @@ export default function AddClass() {
       type,
       nativeEvent: { timestamp },
     } = event;
+    if (event.type === 'dismissed') return setShowEndHourPicker(false);
     if (date) setEndHour(date);
     setShowEndHourPicker(false);
   };
@@ -312,7 +313,15 @@ export default function AddClass() {
         <Text color="white" mt="2" fontSize="md">
           Materia
         </Text>
-        <Select mt="1" size="lg" placeholder="Materia" fontSize="xl" onValueChange={setSubjectId} color="white">
+        <Select
+          selectedValue={subjectId?.toString() || undefined}
+          mt="1"
+          size="lg"
+          placeholder="Materia"
+          fontSize="xl"
+          onValueChange={setSubjectId}
+          color="white"
+        >
           {subjects.map(subject => {
             return <Select.Item key={`group-${subject.id}`} label={subject.name} value={subject.id.toString()} />;
           })}
@@ -321,7 +330,15 @@ export default function AddClass() {
         <Text color="white" mt="4" fontSize="md">
           Maestro
         </Text>
-        <Select mt="1" size="lg" placeholder="Maestro" fontSize="xl" onValueChange={setTeacherId} color="white">
+        <Select
+          selectedValue={teacherId?.toString() || undefined}
+          mt="1"
+          size="lg"
+          placeholder="Maestro"
+          fontSize="xl"
+          onValueChange={setTeacherId}
+          color="white"
+        >
           {teachers.map(teacher => {
             return (
               <Select.Item
@@ -348,7 +365,7 @@ export default function AddClass() {
           onPress={() => setShowStartHourPicker(prevValue => !prevValue)}
         >
           <Text color="white" textAlign="left" fontSize="lg">
-            {(startHour && parseHour(startHour)) || 'Selecciona una hora'}
+            {startHour != null ? parseHour(startHour) : 'Selecciona una hora'}
           </Text>
         </Button>
         {showStartHourPicker && (
@@ -371,7 +388,7 @@ export default function AddClass() {
           onPress={() => setShowEndHourPicker(prevValue => !prevValue)}
         >
           <Text color="white" textAlign="left" fontSize="lg">
-            {(endHour && parseHour(endHour)) || 'Selecciona una hora'}
+            {endHour != null ? parseHour(endHour) : 'Selecciona una hora'}
           </Text>
         </Button>
         {showEndHourPicker && (
